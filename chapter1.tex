@@ -27,7 +27,7 @@ Lexical analyzer generators such as Lex and Flex must be used in conjunction wit
 Figure~\ref{fig:YaccGrammarRule} shows an example Yacc grammar rule matched to input formatted as military time.  In this example, military\_hour, minute, and second (all defined somewhere else in the grammar) describe specific parts of input data as military\_time.  When tokens match this rule, a code action is executed \cite{johnson_01,niemann_01}.
 
 \indent
-This report will present a new input specification based on Extended Backus-Naur Form (EBNF) called Typed-EBNF (TEBNF) (see appendix A), and a new prototype code generation tool that uses TEBNF as its input specification.  The tool will validate key features of TEBNF:
+This report will present a new input specification based on Extended Backus-Naur Form (EBNF) called Typed-EBNF (TEBNF) (see appendix~\ref{appendix:TEBNF}), and a new prototype code generation tool that uses TEBNF as its input specification.  The tool will validate key features of TEBNF:
 \begin{enumerate}
   \item TEBNF grammars can describe input patterns that include a mixture of strings, numbers, and/or raw groupings of bytes.
   \item TEBNF integrates grammar rules with states and actions.
@@ -38,7 +38,7 @@ This report will present a new input specification based on Extended Backus-Naur
   \item TEBNF supports arithmetic and non-arithmetic operations inside grammar rules.
   \item TEBNF grammars match specific pieces of a given input to well-known types of varied sizes (in bits or bytes).
   \item TEBNF supports the use of variables.
-  \item TEBNF is Turing complete (see appendix B).
+  \item TEBNF is Turing complete (see appendix~\ref{appendix:TEBNFTuringCompletenessProof}).
 \end{enumerate}
 
 \indent

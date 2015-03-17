@@ -1,6 +1,6 @@
 \makeappendices
 \appendix{TEBNF Syntax and Usage}
-\label{chap:TEBNF}
+\label{appendix:TEBNF}
 
 \appendixsection{TEBNF Grammar Syntax}
 \label{sec:TEBNFGrammarSyntax}
@@ -10,8 +10,7 @@ Like standard EBNF, Typed EBNF (TEBNF) is used to express a context-free grammar
   \item Describe when and how responses will be sent to the sender as needed by the specified protocol.
   \item Describe what the input data sent to the generated application will look like.  This combines the traditional specification of lexical and syntactic analysis.
   \item Describe how the data will be processed by the generated application after the lexical and syntactic analysis stage.
-  \item Describe the expected output of the application after it has been processed.
-  \item Enable or disable runtime GUI generation in the generated application.  All runtime GUI generation will be based on reasonable inferences about the input data and the generated code.
+  \item Describe the expected output of the application after it has been processed.  
   \item Leverage existing knowledge of EBNF grammars rather than require the learning of a completely new format.
 \end{itemize}
 
@@ -98,7 +97,7 @@ payload\ =\ INT\_64
 \end{equation}
 
 \indent
-TEBNF also has static variables, which are a kind of sub-element that can assume the type of whatever is assigned to them.  They are static because they have global visibility$-$i.e. they can be declared anywhere and accessed from any other element, regardless of where they were declared.  Static variables are always prefixed by the '‘\$'’ character (example~\ref{ExampleStaticVariableAssignment}):
+TEBNF also has static variables, which are a kind of subelement that can assume the type of whatever is assigned to them.  They are static because they have global visibility$-$i.e. they can be declared anywhere and accessed from any other element, regardless of where they were declared.  Static variables are always prefixed by the '‘\$'’ character (example~\ref{ExampleStaticVariableAssignment}):
 
 \begin{equation}
 \$payloads\ =\ payload
@@ -106,7 +105,7 @@ TEBNF also has static variables, which are a kind of sub-element that can assume
 \end{equation}
 
 \indent
-A static variable can become typed when a typed terminal is assigned to it.  Production rules, terminals, and literals can also be assigned to static variables.  This capability makes static variables the most flexible sub-element available in TEBNF.
+A static variable can become typed when a typed terminal is assigned to it.  Production rules, terminals, and literals can also be assigned to static variables.  This capability makes static variables the most flexible subelement available in TEBNF.
 
 \appendixsection{TEBNF Operators}
 \label{sec:TEBNFOperators}
@@ -181,19 +180,19 @@ AS & Defines a new    & OUTPUT @UDP\_Out AS \\
 Grammar elements contain production rules.  Production rules are subelements of their containing grammar element.  Terminal and non-terminal symbols have no prefix character, are made up only of alpha-numeric characters, and are case-sensitive.
 \begin{lstlisting}[basicstyle=\small,caption={A TEBNF Grammar element.},label=ExampleGrammarElement]
   GRAMMAR @Nitf
-    \# Describe the file to receive.
+    # Describe the file to receive.
     sync = 'N','I','T','F','0','2','.','1','0';
-    skip1 = BYTE\{333\}; \# FL offset is 342.
-    fileLength = UNSIGNED INT\_STR\_96; # 12 bytes
-    skip2 = BYTE\{,\};
+    skip1 = BYTE{333}; # FL offset is 342.
+    fileLength = UNSIGNED INT_STR_96; # 12 bytes
+    skip2 = BYTE\{,};
     header = sync, skip1, fileLength;
     file = header, skip2;
-    fileLength; # Overall size of file.
+    = fileLength; # Overall size of file.
   END
 \end{lstlisting}
 
 \indent
-Production rule subelements can only be declared within TEBNF grammar elements.  Production rule subelements can be referred to directly using the containing element’s name along with the dot operator followed by the sub-element (symbol) name.
+Production rule subelements can only be declared within TEBNF grammar elements.  Production rule subelements can be referred to directly using the containing element’s name along with the dot operator followed by the subelement (symbol) name.
 
 \begin{equation}
 @packet.payloadSize
@@ -201,7 +200,7 @@ Production rule subelements can only be declared within TEBNF grammar elements. 
 \end{equation}
 
 \indent
-This format is similar to the way object-oriented languages like C++ and Java provide access to object members, though it is important to note that TEBNF itself is not object-oriented.  The dot operator permits other grammar elements and state transition table elements to have access to a given production rule sub-element.
+This format is similar to the way object-oriented languages like C++ and Java provide access to object members, though it is important to note that TEBNF itself is not object-oriented.  The dot operator permits other grammar elements and state transition table elements to have access to a given production rule subelement.
 
 \subsection{TEBNF State Transition Table Elements}
 The function of any given application can be described as a finite state machine composed of a finite set of states \cite{lee_01}.  The machine is in one state at a time, and movement from one state to another is triggered by specific inputs \cite{lee_01}. Because applications can be asynchronous—i.e. performing work on multiple threads, it is possible to have a finite state machine on each thread of execution.  Concurrent behavior is becoming common in today’s software \cite{kahlon_01}.
@@ -230,7 +229,14 @@ Actions elements contain a list of actions to be executed in the order they are 
 \end{lstlisting}
 
 \subsection{TEBNF Input and Output Method Elements}
-Every TEBNF grammar requires at least one input method to be declared.  Table~\ref{TEBNFInputAndOutputSpecifiers} shows all of the possible inputs and outputs available in TEBNF.  Each input method describes a way for the generated application to receive input.  No other settings information is required by an input method because the generated application will provide a way for the user of to give it the needed information through the GUI.  Settings information provided through the GUI is stored in the operating system registry or its equivalent (depending on the target OS), so this information should only need to be entered once or very seldom.
+Table~\ref{TEBNFInputAndOutputSpecifiers} shows all of the possible inputs and outputs available in TEBNF.  Each input method describes a way for the generated application to receive input.  No other settings information is required by an input method because the generated application will provide a way for the user of to give it the needed information through the user interface.  Console elements allow prompt s to be defined within their scope, which tie a prompt string to a typed value to be input by a user.  Listing~\ref{ExampleInputElement} shows a console input element with two prompt values.  The first prompt value will display the prompt "Number: " and treat the input provided through the console as a signed 64-bit integer.  The second prompt value will display the prompt "Op: " and treat input as a signed 8-bit integer.
+
+\begin{lstlisting}[basicstyle=\small,caption={A TEBNF Console Input element.},label=ExampleInputElement]
+  INPUT @Console_In = CONSOLE
+    promptNum = INT_64 = "Number: ";
+    promptOp = INT_8 = "Op: ";
+  END
+\end{lstlisting}
 
 \begin{table}[h]
 \begin{center}
@@ -246,7 +252,7 @@ CONSOLE	& Read/write input from/to command line. \\ \hline
 \end{table}
 
 \indent
-Every TEBNF grammar requires at least one output method to be declared.  Table~\ref{TEBNFInputAndOutputSpecifiers} shows all of the possible outputs available in TEBNF.  Output methods describe a way for the generation application to send or display output.
+Table~\ref{TEBNFInputAndOutputSpecifiers} shows all of the possible outputs available in TEBNF.  Output methods describe a way for the generation application to send or display output.
  
 \indent
 Networking inputs and outputs in TEBNF are based on UDP/IP.  There are many other networking protocols, but many of them are transport and session layer protocols.  Thus, describing other protocols can be done by using a state transition table to describe the protocol that will work over UDP/IP.
@@ -290,7 +296,7 @@ END
 
 
 \appendix{TEBNF Turing Completeness Proof}
-\label{chap:TEBNFTuringCompletenessProof}
+\label{appendix:TEBNFTuringCompletenessProof}
 
 \appendixsection{Turing Completeness}
 Turing machines provide the most powerful computational model known to exist \cite{kepser_01}.  The Turing completeness of a programming language is important because anything computable can be computed using that language \cite{kepser_01}.
