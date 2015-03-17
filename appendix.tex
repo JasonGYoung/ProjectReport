@@ -1,0 +1,425 @@
+\makeappendices
+\appendix{TEBNF Syntax and Usage}
+\label{chap:TEBNF}
+
+\appendixsection{TEBNF Grammar Syntax}
+\label{sec:TEBNFGrammarSyntax}
+Like standard EBNF, Typed EBNF (TEBNF) is used to express a context-free grammar that consists of non-terminal production rules and terminal symbols that may or may not have a type.  The typing of terminal symbols makes it possible to describe exactly how the input is recognized, yet preserves the simple syntax of EBNF.  TEBNF provides a set of input and output methods, grammar rules, and actions, tied together to a set of states using a state transition table.  It allows users to:
+\begin{itemize}
+  \item Describe how the input data will be sent to the generated application (UDP, file, or in-memory).
+  \item Describe when and how responses will be sent to the sender as needed by the specified protocol.
+  \item Describe what the input data sent to the generated application will look like.  This combines the traditional specification of lexical and syntactic analysis.
+  \item Describe how the data will be processed by the generated application after the lexical and syntactic analysis stage.
+  \item Describe the expected output of the application after it has been processed.
+  \item Enable or disable runtime GUI generation in the generated application.  All runtime GUI generation will be based on reasonable inferences about the input data and the generated code.
+  \item Leverage existing knowledge of EBNF grammars rather than require the learning of a completely new format.
+\end{itemize}
+
+\appendixsection{TEBNF Structure}
+\label{sec:TEBNFStructure}
+The structure of TEBNF is composed of a set of elements.  There are five kinds of elements in TEBNF: input methods, output methods, grammar sections, actions, and state transition tables.  Collectively, these elements and their contents are known as a TEBNF grammar.  Each TEBNF grammar requires at least one or more of each kind of element.
+
+\appendixsection{TEBNF Elements and Subelements}
+\label{sec:TEBNFElementsAndSubelements}
+TEBNF elements (table~\ref{TEBNFElements}) contain one or more subelements.  Subelements within TEBNF consist of production rules, typed terminals, non-typed terminals, literal values, operators, states, and static variables.
+
+\begin{table}[h]
+\begin{center}
+\caption{TEBNF Elements.}
+\label{TEBNFElements}
+\begin{tabular}{|l|l|} \hline
+\textbf{Element} & \textbf{Description} \\ \hline \hline
+INPUT @name & specifier	Input element of a specific input specifier. \\ \hline
+OUTPUT @name & specifier	Output of a specific output specifier. \\ \hline
+GRAMMAR @name & Start of grammar section. \\ \hline
+ACTIONS @name & Contains one or more actions. \\ \hline
+STATES @name & Start of state transition table section. \\ \hline
+END	& End of element section. \\ \hline
+\end{tabular}
+\end{center}
+\end{table}
+
+\indent
+Subelements are declared where they are first used.  TEBNF infers what a subelement is by the way it is used.  Each element requires a name be given to it.  Element names are case-sensitive, can only contain visible characters, and are always prefixed by the '‘@'’ character as shown in example~\ref{ExampleElementName}:
+
+\begin{equation}
+GRAMMAR \ @packet
+\label{ExampleElementName}
+\end{equation}
+
+\appendixsection{TEBNF Scoping Rules}
+\label{sec:TEBNFScopingRules}
+Elements and subelements are directly accessible at the scope they are created, similar to the C++ language.  Elements can be declared within the scope of other elements.  Subelements exist within the scope of their respective elements.  Each type of element has specific types of subelements that can be declared only within the scope of that type of element.
+
+\appendixsection{TEBNF Types}
+\label{sec:TEBNFTypes}
+Association of types (table~\ref{TEBNFSymbols}) with terminal symbols offers an extra level of precision when matching specific patterns found in input data.  These symbols are called typed terminals.  TEBNF can infer the type of a terminal symbol because each type has two important components.
+
+\begin{table}[h]
+\begin{center}
+\caption{TEBNF symbols, production rules, non-typed terminals, and typed terminals.}
+\label{TEBNFSymbols}
+\begin{tabular}{|l|l|l|} \hline
+\textbf{Type} & \textbf{Description} & \textbf{Example} \\ \hline \hline
+symbol & Production rule  & alphabet \\
+       &(non-terminal)    &          \\ \hline
+symbol & Non-typed terminal   & '‘a'’, '‘b’', '‘c'’, 0xAB, \\
+       & (1 or more literals) & “"String literal"”     \\ \hline                    
+\#comment & Single-line comment & \#This is a comment. \\ \hline
+\#\#      & Multi-line comment & \#\# This is a really,   \\
+comment &                    & really, really long    \\
+\#\#      &                    & multi-line comment. \#\# \\ \hline
+\$var & Static variable & \$myValue = 42 ; \\ \hline
+type & Typed terminal & CHAR\{0,\} ; \\ \hline
+%BIT & Represents 1 bit & My\_Byte = BIT\{8\} ; \\ \hline
+BYTE & Represents a & My\_Kb = BYTE\{1024\} ; \\
+     & 8-bit byte	&                       \\ \hline
+INT\_X      & Represents an integer & My\_Int = INT\_64; \\
+            & of size X bits        &                  \\ \hline
+INT\_STR\_X & Represents an integer & fileLength = UNSIGNED \\
+            & as a string of size   & INT\_STR\_96;         \\           
+            & X bits                &                       \\ \hline
+CHAR        & Represents a 8-bit    & MyChar = CHAR ;        \\
+            & character             & MyString = CHAR\{128\} ; \\ \hline
+FLOAT\_X    & Floating-point number & MyFloat = FLOAT\_64 ; \\
+            & of size X bits        &                      \\ \hline
+UNSIGNED    & Unsigned number & UNSIGNED INT\_16\{2\} ; \\
+            & terminal        &                      \\ \hline
+\end{tabular}
+\end{center}
+\end{table}
+
+\indent
+First, each type has an inherent size in bits or bytes.  Whenever data is matched to a specific type the size is immediately known.  Because the size of each type is known beforehand, the offset of the next symbol is immediately known.  Second, each type inherently identifies how it should be used in a given context.  TEBNF types are expressed by assigning a type to a terminal production symbol, as shown in example~\ref{ExampleTypeAssignment}:
+
+\begin{equation}
+payload\ =\ INT\_64
+\label{ExampleTypeAssignment}
+\end{equation}
+
+\indent
+TEBNF also has static variables, which are a kind of sub-element that can assume the type of whatever is assigned to them.  They are static because they have global visibility$-$i.e. they can be declared anywhere and accessed from any other element, regardless of where they were declared.  Static variables are always prefixed by the '‘\$'’ character (example~\ref{ExampleStaticVariableAssignment}):
+
+\begin{equation}
+\$payloads\ =\ payload
+\label{ExampleStaticVariableAssignment}
+\end{equation}
+
+\indent
+A static variable can become typed when a typed terminal is assigned to it.  Production rules, terminals, and literals can also be assigned to static variables.  This capability makes static variables the most flexible sub-element available in TEBNF.
+
+\appendixsection{TEBNF Operators}
+\label{sec:TEBNFOperators}
+There are three categories of operators in TEBNF.  First are production rule operators (table~\ref{TEBNFProductionRuleOperators}), which are used to build production rules.  Second are arithmetic and comparison operators (table~\ref{TEBNFArithmeticAndComparisonOperators}).  Arithmetic and comparison operators are a key difference between TEBNF and standard EBNF, which does not have them.  Third is inter-element operators that perform operations on and/or between elements (table~\ref{TEBNFInterElementOperator}).  The only operator that falls in this category is the "AS" operator.
+
+\begin{table}[h]
+\begin{center}
+\caption{TEBNF production rule operators.}
+\label{TEBNFProductionRuleOperators}
+\begin{tabular}{|l|l|l|} \hline
+\textbf{Operator} & \textbf{Description} & \textbf{Example} \\ \hline \hline
+=   & Definition$—$i.e. & alphaNumericCharacter \\
+    & is defined as     & = letter $|$ number ;  \\ \hline
+=   & Grammar total     & = fileLength ; \\
+    & length            &                \\ \hline
+,   & Concatenation	    & twoLetters =      \\
+    &                   & letter , letter ; \\ \hline
+;   & Termination       & twoVals =    \\
+    &                   & val1, val2 ; \\ \hline
+$|$   & Or	            & letter $|$ number \\ \hline
+$|$   & State Transition  & Start $|$ packet $|$ … \\
+    & table delimiter   &                    \\ \hline
+.   & Element member    & @packet.payloadSize \\
+    & access            &                     \\ \hline
+%(…) & Sub-rule Closure	& (letter) \\ \hline
+\{min,max\} & Occurrence range & letter\{0,\} \\ \hline
+{len}     & Exact range,  & letter\{26\} \\
+          & where len is  &            \\
+          & the min and   &            \\
+          & max.          &            \\ \hline
+[\ ]      & Array subscript	& myChar[5] \\ \hline
+\end{tabular}
+\end{center}
+\end{table}
+
+\begin{table}[h]
+\begin{center}
+\caption{TEBNF arithmetic and comparison operators.}
+\label{TEBNFArithmeticAndComparisonOperators}
+\begin{tabular}{|l|l|l|} \hline
+\textbf{Operator} & \textbf{Description} & \textbf{Example} \\ \hline \hline
+== & Equality & \$X == \$Y \\ \hline
+=  & Assign   & \$x = 45 ; \\ \hline
++  & Add      & \$x = \$y + \$z \\ \hline
+-  & Subtract & \$x = \$g - \$h \\ \hline
++= & Addition assignment & 	 \\ \hline
+++ & Post-increment &  \\ \hline
+-= & Subtraction assignment &  \\ \hline
+-- & Post-decrement &  \\ \hline
+*  & Multiply & \$x = \$y * 92 \\ \hline
+/  & Divide & X = 1 + (y – 2) \\ \hline
+\end{tabular}
+\end{center}
+\end{table}
+
+\begin{table}[h]
+\begin{center}
+\caption{TEBNF inter-element operator.}
+\label{TEBNFInterElementOperator}
+\begin{tabular}{|l|l|l|} \hline
+\textbf{Operator} & \textbf{Description} & \textbf{Example} \\ \hline \hline
+AS & Defines a new    & OUTPUT @UDP\_Out AS \\
+   & element to be    & @UDP\_In END        \\                  
+   & the same as an   &                     \\
+   & existing element &                     \\ \hline
+\end{tabular}
+\end{center}
+\end{table}
+
+\appendixsection{TEBNF Grammar Elements}
+\label{sec:TEBNFGrammarElements}
+Grammar elements contain production rules.  Production rules are subelements of their containing grammar element.  Terminal and non-terminal symbols have no prefix character, are made up only of alpha-numeric characters, and are case-sensitive.
+\begin{lstlisting}[basicstyle=\small,caption={A TEBNF Grammar element.},label=ExampleGrammarElement]
+  GRAMMAR @Nitf
+    \# Describe the file to receive.
+    sync = 'N','I','T','F','0','2','.','1','0';
+    skip1 = BYTE\{333\}; \# FL offset is 342.
+    fileLength = UNSIGNED INT\_STR\_96; # 12 bytes
+    skip2 = BYTE\{,\};
+    header = sync, skip1, fileLength;
+    file = header, skip2;
+    fileLength; # Overall size of file.
+  END
+\end{lstlisting}
+
+\indent
+Production rule subelements can only be declared within TEBNF grammar elements.  Production rule subelements can be referred to directly using the containing element’s name along with the dot operator followed by the sub-element (symbol) name.
+
+\begin{equation}
+@packet.payloadSize
+\label{ExampleDotOperator}
+\end{equation}
+
+\indent
+This format is similar to the way object-oriented languages like C++ and Java provide access to object members, though it is important to note that TEBNF itself is not object-oriented.  The dot operator permits other grammar elements and state transition table elements to have access to a given production rule sub-element.
+
+\subsection{TEBNF State Transition Table Elements}
+The function of any given application can be described as a finite state machine composed of a finite set of states \cite{lee_01}.  The machine is in one state at a time, and movement from one state to another is triggered by specific inputs \cite{lee_01}. Because applications can be asynchronous—i.e. performing work on multiple threads, it is possible to have a finite state machine on each thread of execution.  Concurrent behavior is becoming common in today’s software \cite{kahlon_01}.
+
+\indent
+Representation of a finite state machine in TEBNF is done using a state transition table that can access any TEBNF input, output, grammar symbol, or static variable.  This state transition table ties the various elements and subelements of a TEBNF grammar into a coherent description of a single thread of execution.  This means that TEBNF makes it possible to represent multiple threads of execution using multiple state transition tables.  Each state transition table consists of six columns delimited by the pipe operator.  Columns flow from left to right in the following order:
+\begin{enumerate}
+ \item State
+ \item Input and/or condition
+ \item Input Method
+ \item Next State
+ \item Output and/or action
+ \item Output Method
+\end{enumerate}
+
+\indent
+The first column is the current state.  Each state identifies where to go in the finite state machine when the right conditions are met.  The name of each state must be unique within the scope of the state transition table it belongs to.  The second column specifies a condition that must be met to move to the next state.  The condition can be but is not limited to a logical statement such as checking the value of a static variable or checking if the input received via a specific input method (specified in the third column) matches a given grammar production.  The fourth column is the state to transition to upon satisfaction of the input or condition.  The fifth column identifies the action to execute when transitioning to this next state.  The action can range from setting a static variable to sending an output described by a grammar production via an output method (sixth column).
+
+\subsection{TEBNF Actions Elements}
+Actions elements contain a list of actions to be executed in the order they are listed.  Actions elements can only be used within a state transition table element row.  Since they are not required in a TEBNF grammar, actions can be listed directly inside a state transition table.  Actions elements are similar to macros in C++, and can accept zero or more comma-delimited parameters, as shown in the example taken from appendix listing~\ref{ExampleUTM46}.  Actions elements can also contain calls to C or C++ functions, making them one of the most powerful elements available in TEBNF.
+\begin{lstlisting}[basicstyle=\small,caption={A TEBNF Actions element.},label=ExampleActionsElement]
+  ACTIONS @right (val)
+    @tape.elem[@tape.$i] = val;
+    @tape.$i++;
+  END
+\end{lstlisting}
+
+\subsection{TEBNF Input and Output Method Elements}
+Every TEBNF grammar requires at least one input method to be declared.  Table~\ref{TEBNFInputAndOutputSpecifiers} shows all of the possible inputs and outputs available in TEBNF.  Each input method describes a way for the generated application to receive input.  No other settings information is required by an input method because the generated application will provide a way for the user of to give it the needed information through the GUI.  Settings information provided through the GUI is stored in the operating system registry or its equivalent (depending on the target OS), so this information should only need to be entered once or very seldom.
+
+\begin{table}[h]
+\begin{center}
+\caption{TEBNF input/output specifiers.}
+\label{TEBNFInputAndOutputSpecifiers}
+\begin{tabular}{|l|l|} \hline
+\textbf{Input/Output Types} & \textbf{Description} \\ \hline \hline
+UDP\_IP	& Read/write input from/to from UDP. \\ \hline
+FILE	& Read/write input from/to a file. \\ \hline
+CONSOLE	& Read/write input from/to command line. \\ \hline
+\end{tabular}
+\end{center}
+\end{table}
+
+\indent
+Every TEBNF grammar requires at least one output method to be declared.  Table~\ref{TEBNFInputAndOutputSpecifiers} shows all of the possible outputs available in TEBNF.  Output methods describe a way for the generation application to send or display output.
+ 
+\indent
+Networking inputs and outputs in TEBNF are based on UDP/IP.  There are many other networking protocols, but many of them are transport and session layer protocols.  Thus, describing other protocols can be done by using a state transition table to describe the protocol that will work over UDP/IP.
+
+\indent
+Custom input/output (I/O) is accomplished by using the state transition table to specify which grammar is used when receiving data as input or for sending data as output.  In the case of a custom input, a GUI is generated that will ask for input to match the described grammar.  In the case of output, data will be sent to the desired output following the format described in the provided grammar.
+
+\subsection{A TEBNF Example}
+A TEBNF example is shown in listing~\ref{ExampleUDPNitfReceiver} that describes a client application that transfers NITF 2.1 files over UDP/IP.  This client application guarantees one-time delivery of each packet or none at all.  The generated application receives packets matching the description shown in the example’s grammar element.  Upon reception of a packet, it will increment the payloads static variable, check if all of the data (entire file) has been received, and send an ACK message to tell the sender that a packet with a specific packet number has been received successfully.  Once all of the packets have been received to reconstruct the file being sent (tracked by \$payloads), the output is written to file and \$payloads is cleared and ready to receive more file packets.
+\begin{lstlisting}[basicstyle=\small,caption={TEBNF grammar describing a UDP NITF 2.1 file transfer client.},label=ExampleUDPNitfReceiver]
+INPUT @UDP_In = UDP_IP END # UDP/IP input socket.
+OUTPUT @UDP_Out AS @UDP_In END
+OUTPUT @File_Out = FILE END
+OUTPUT @Console_Out = CONSOLE END
+
+GRAMMAR @Nitf
+  # Describe the file to receive.
+  syncWord = 'N', 'I', 'T', 'F', '0', '2', '.', '1', '0';
+  skip1 = BYTE{333}; # FL offset is 342.
+  fileLength = UNSIGNED INT_STR_96; # NITF file length field = 12 bytes.
+  skip2 = BYTE{,};
+  header = syncWord, skip1, fileLength;
+  file = header, skip2;
+  = fileLength; # Overall size of this file.
+END
+GRAMMAR @Send startSend = "send"; END
+GRAMMAR @Status recvMsg = "All files received from server, exiting."; END
+GRAMMAR @Done done = "done"; END
+
+STATES @File_Transfer
+#-----------------------------------------------------------------------
+# State | Input or  | Input   | Next  | Output or       | Output       |
+#       | Condition | Method  | State | Action          | Method       |
+#-----------------------------------------------------------------------
+  Init  |           |         | Start | @Send.startSend | @UDP_Out     ;
+  Start | @Nitf     | @UDP_In | Init  | @Nitf.file      | @File_Out    ;
+        | @Done     | @UDP_In | Quit  | @Status.recvMsg | @Console_Out ;
+  Quit  |           |         |       |                 |              ;
+END
+\end{lstlisting}
+
+
+\appendix{TEBNF Turing Completeness Proof}
+\label{chap:TEBNFTuringCompletenessProof}
+
+\appendixsection{Turing Completeness}
+Turing machines provide the most powerful computational model known to exist \cite{kepser_01}.  The Turing completeness of a programming language is important because anything computable can be computed using that language \cite{kepser_01}.
+
+\indent
+A Turing machine that can perform any operation of any other ordinary Turing machine is known as a universal Turing machine \cite{moore_01}.  Therefore, a programming language that can simulate a universal Turing machine is Turing complete.
+
+\appendixsection{Proof}
+Multiple examples of universal Turing machines have been presented \cite{rogozhin_01,shannon_01,neary_01}.  A universal Turing machine that simulates a 2-tag system can be implemented with relatively few states and symbols.  Tag systems simulate the game of tag, where the goal is to see if it will ever terminate by reaching the end of the sequence of symbols.
+
+\indent
+Rogozhin proved the universality of several classes of tag systems including a 4-state 6-symbol universal Turing machine called UTM(4,6) \cite{rogozhin_01}.  The tag system simulated by UTM(4,6) consists of 22 commands and is the lowest known number of commands for a universal Turing machine \cite{rogozhin_01}.  The machine is comprised of:
+\begin{itemize}
+  \item A set of states: $q1, q2, q3, q4$
+  \item Input symbols: 0 (blank), b, x, y, c (mark)
+  \item Tape symbols
+  \item An initial state: $q1$
+  \item A transition function (executed in order):
+  \begin{enumerate}
+    \item Print (write) a symbol.
+    \item Move head left $L$, right $R$, none $-$.
+    \item Go to the next state. 
+  \end{enumerate}
+\end{itemize}
+
+\indent
+UTM(4,6) \cite{rogozhin_01} is described as a list of 5-tuples (table~\ref{FiveTuples}).  These 5-tuples are formatted in order of evaluation using the Turing/Davis convention ($q_i$, $S_j$, $S_k$, left $L$, right $R$, none $-$, $q_m$) \cite{kumar_01}:
+\begin{enumerate}
+  \item Current state $q_i$.
+  \item Scanned symbol $S_j$.
+  \item Print symbol $S_k$.
+  \item Move tape head left $L$, right $R$, none $-$.
+  \item Next state $q_m$.
+\end{enumerate}
+
+\indent
+Since Rogozhin proved the universality of UTM(4,6) \cite{rogozhin_01}, an implementation of this machine in TEBNF is provided in listing~\ref{ExampleUTM46} to demonstrate the capabilities and Turing Completeness of TEBNF.
+
+\begin{table}[h]
+\begin{center}
+\caption{List of 5-tuples describing UTM(4,6).}
+\label{FiveTuples}
+\begin{tabular}{|l|l|l|l|} \hline
+$q11xLq1$ & $q210Rq3$ & $q311Rq3$ & $q410Rq4$ \\ \hline
+$q1byRq1$ & $q2byLq3$ & $q3bxRq4$ & $q4bcLq2$ \\ \hline
+$q1ybLq1$ & $q2yxRq2$ & $q3ybRq3$ & $q4yxRq4$ \\ \hline
+$q1xbRq1$ & $q2xyLq2$ & $q3x-$    & $q4x-   $ \\ \hline
+$q10xLq1$ & $q201Lq2$ & $q30cRq1$ & $q40cLq2$ \\ \hline
+$q1c0Rq4$ & $q2cbRq2$ & $q3c1Rq1$ & $q4cbRq4$ \\ \hline
+\end{tabular}
+\end{center}
+\end{table}
+
+\appendixsection{Stepping Through the Machine}
+The tag system simulated by UTM(4,6) \cite{rogozhin_01} has three stages.  The 5-tuples each stage refers to are shown in table~\ref{FiveTuples}.  The corresponding TEBNF implementation is given in listing~\ref{ExampleUTM46}. The TEBNF implementation starts on the first line of the transition table at the begin state.  The begin state reads the contents of a file into the array @tape.elements that functions as the tape.
+
+\indent
+Stage 1.  The first stage is complete when the head of the machine moves right and meets the mark.  The mark is deleted and the first stage ends at $q1c0Rq4$.  The end of this stage corresponds to the seventh line in the TEBNF state table.
+
+\indent 
+Stage 2.  The machine executes a series of jumps to arrive at $q40cLq2$.  If the head reaches pair xb, the machine jumps to $q2byLq3$ and halts at $q3x-$.  Otherwise, the second stage ends upon reaching pair 1b.
+
+\indent
+Stage 3.  The machine jumps to $q3ybRq3$, then $q311Rq3$.  Upon moving to the right, the machine head reaches c (the mark), deletes it, and jumps to $q3c1Rq1$  to begin a new cycle.
+
+\indent
+Upon reaching one of the halt states, the TEBNF implementation of the machine writes the contents of the tape to a text file called Tape\_Out. 
+
+\begin{lstlisting}[basicstyle=\small,caption={Rogozhin's UTM(4,6) implemented in TEBNF.},label=ExampleUTM46]
+# TEBNF implementation of UTM(4,6) (a 4-state 6-symbol
+# universal Turing machine) presented by Y. Rogozhin in
+# "Small universal Turing machines", 1996.
+
+INPUT @TpIn = FILE END;        # For reading tape from file.
+OUTPUT @TpOut AS @Tape_In END; # For writing to tape file.
+
+GRAMMAR @tape
+  elem = BYTE{,} ; # Array with no min or max number of elements.
+  $i = 0 ;         # Index for moving left or right on tape.
+END
+
+ACTIONS @right (val)
+  @tape.elem[@tape.$i] = val;
+  @tape.$i++;
+END
+
+ACTIONS @left (val)
+  @tape.elem[@tape.$i] = val;
+  @tape.$i-- ;
+END
+
+# Read the tape and run the universal Turing machine. Moving right
+# and left on the tape (represented by the @tape.elem array) is
+# represented by incrementing and decrementing $index, respectively.
+#
+# Symbols: 0 (blank), 1, b, x, y, c
+# States:  q1, q2, q3, q4
+#
+STATES @UTM_4_6
+#---------------------------------------------------------------------
+#State| Input or Condition       | Input  | Next  |Output or  |Output|
+#     |                          | Method | State |Action     |Method|
+#---------------------------------------------------------------------
+begin |@tape                     | @TpIn  | q1    |           |      ;
+   q1 |@tape.elem[@tape.$i]== '1'|        | q1    |@left('1') |      ;
+      |@tape.elem[@tape.$i]== 'b'|        | q1    |@right('0')|      ;
+      |@tape.elem[@tape.$i]== 'y'|        | q1    |@left('b') |      ;
+      |@tape.elem[@tape.$i]== 'x'|        | q1    |@right('0')|      ;
+      |@tape.elem[@tape.$i]== '0'|        | q1    |@left('x') |      ;
+      |@tape.elem[@tape.$i]== 'c'|        | q4    |@left('0'  |      ;
+   q2 |@tape.elem[@tape.$i]== '1'|        | q2    |@right('0')|      ;
+      |@tape.elem[@tape.$i]== 'b'|        | q3    |@left('y') |      ;
+      |@tape.elem[@tape.$i]== 'y'|        | q2    |@left('x') |      ;
+      |@tape.elem[@tape.$i]== 'x'|        | q2    |@left('y') |      ;
+      |@tape.elem[@tape.$i]== '0'|        | q2    |@left('1') |      ;
+      |@tape.elem[@tape.$i]== 'c'|        | q2    |@right('b')|      ;
+   q3 |@tape.elem[@tape.$i]== '1'|        | q3    |@right('1')|      ;
+      |@tape.elem[@tape.$i]== 'b'|        | q4    |@right('x')|      ;
+      |@tape.elem[@tape.$i]== 'y'|        | q3    |@right('b')|      ;
+      |@tape.elem[@tape.$i]== 'x'|        |       |@tape      |@TpOut;
+      |@tape.elem[@tape.$i]== '0'|        | q1    |@right('c')|      ;
+      |@tape.elem[@tape.$i]== 'c'|        | q1    |@right('1')|      ;
+   q4 |@tape.elem[@tape.$i]== '1'|        | q4    |@right('0')|      ;
+      |@tape.elem[@tape.$i]== 'b'|        | q2    |@left('c') |      ;
+      |@tape.elem[@tape.$i]== 'y'|        | q4    |@right('x')|      ;
+      |@tape.elem[@tape.$i]== 'x'|        |       |@tape      |@TpOut;
+      |@tape.elem[@tape.$i]== '0'|        | q2    |@left('c') |      ;
+      |@tape.elem[@tape.$i]== 'c'|        | q4    |@right('b')|      ;
+END
+\end{lstlisting}
+
+

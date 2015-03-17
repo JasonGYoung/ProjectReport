@@ -1,0 +1,66 @@
+%
+% TEBNF Project Report
+%
+% Jason Young
+%
+% Based on the USU thesis and dissertation template (Rev. 31) last
+% last modified Wed Oct 10 12:16:55 2007 by Scott Budge <scott@goga.ece.usu.edu>
+%
+
+\documentclass[cs,msreport]{usuthesis}
+
+% Packages
+\usepackage{amssymb}           % add ams symbols stuff
+\usepackage{graphicx}          % add graphics
+\usepackage{subfigure}
+\usepackage{xcolor,colortbl}   % table cell coloring
+
+% Author and Title Information
+\author{Jason G. Young}
+\title{Code Generation: An Introduction to Typed EBNF}
+
+% The Committee
+\majorprof{Dr. Vicki H. Allan}
+\firstreader{Dr. Kenneth Sundberg}
+\secondreader{Dr. Curtis Dyreson}
+
+% Graduate Dean
+%\graddean{Dr. Mark R. McLellen} 
+%\deantitlea{Vice President for Research and}
+%\deantitleb{Dean of Graduate Studies}
+
+% Degree Information
+\degree{Master of Science}
+\month{May}
+\year{2015}
+
+\begin{document}
+    % Frontmatter
+    \preliminaries         % set frontmatter style
+    
+    \maketitle
+    \makecopyright         % optional    
+
+    \include{abstract}
+    %\include{dedication}  % optional 
+    %\include{acknowl}     % optional
+    
+    \tableofcontents 
+    \listoftables 
+    \lstlistoflistings
+    \listoffigures
+
+    \body
+    \include{chapter1} % Introduction
+    \include{chapter2} % Background and Related Works
+    \include{chapter3} % Design
+    \include{chapter4} % Implementation
+    \include{chapter5} % Future work
+    \include{chapter6} % Conclusion
+    
+    % Endmatter
+    \references{thesis}{USU-IEEEtran}
+    
+    \include{appendix}
+    %\include{vita}
+\end{document}

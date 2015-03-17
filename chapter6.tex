@@ -1,0 +1,11 @@
+\chapter{Conclusion}
+TEBNF merges the strengths of declarative and imperative programming paradigms into one format.  A prototype code generation tool was presented that accepts a TEBNF grammar as its sole input specification.  The prototype code generation tool demonstrated how TEBNF makes it possible to:
+\begin{itemize}
+  \item Integrate lexical analysis and parsing input specifications into one format.
+  \item Generate C++ classes that handle IO over console, file, or UDP/IP, and abstract the complexities of their usage through TEBNF.
+  \item Generate C++ classes that simultaneously unmarshal and match incoming input data to TEBNF grammar patterns.
+  \item Describe the execution path of an application that accepts input over various IO methods, is able to parse that input, use it, and send output over various IO methods.
+\end{itemize}
+
+\indent
+Software developers using TEBNF are able to focus on what they want to implement rather than how to represent their designs in a language like C++.  TEBNF embodies the idea of using additional levels of indirection to solve problems in computer science.
