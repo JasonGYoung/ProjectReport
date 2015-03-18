@@ -24,7 +24,7 @@ Exploiting NITF 2.1 files requires a detailed understanding of the format.  With
 The NITF 2.1 file format is composed of a file header and one or more segments.  Each segment contains a subheader with data fields.  Each data field has a specific size and format (depending on the type of field), and is located at a specific byte offset within the file.
 
 \indent
-Conditional data and/or data characteristics can be added to NITF 2.1 files. This flexibility to extend the format is done using conditional fields in the file header and subheaders indicating the existence of Tagged Record Extensions (TREs) and Data Extension Segments (DES).  TREs contain data fields, while extension segments can contain data in new formats.
+Conditional data and/or data characteristics can be added to NITF 2.1 files. This flexibility to extend the format is done using conditional fields in the file header and subheaders indicating the existence of Tagged Record Extensions (TREs) and Data Extension Segments (DES).  Tagged Record Extensions contain data fields, while extension segments can contain data in new formats.
 
 \begin{figure}[htbp]
 \centering
@@ -207,5 +207,3 @@ The NITF 2.1 file client test case executable was run using the five sample NITF
 
 \indent
 The sizes of the files received were an exact match to the file sizes listed in table~\ref{sampleNitfSizeServerData}, as the output of the server and client test case executables show in figures~\ref{fig:TestCaseRunNitfServer} and ~\ref{fig:TestCaseRunNitfReceiver}, respectively.  This verifies that the behavior of the NITF 2.1 client test case matches the behavior defined in the TEBNF grammar it was generated from.
-
-

@@ -112,7 +112,7 @@ When multiple patterns must be matched to incoming data, a separate grammar elem
 \end{figure}
 
 \indent
-Grammar elements are translated by the prototype code generation tool into classes that serve a three-fold purpose.  Each grammar class can (1) unmarshal raw input data into specific user-defined types, (2) verify matches to byte patterns in the raw input data, and (3) marshal the values stored in the grammar class back into their original form and byte ordering.  Patterns in data arriving through TEBNF input methods are located by the state machine using unmarshal functions of grammar element classes.  As data arrives through an input method, patterns are recognized in the data by the grammar classes and simultaneously unmarshaled into the data types of those classes.  This means lexical analysis and parsing are performed in the same step, using a single TEBNF input figure~\ref{fig:GeneratedCodeExecutionPath}.  This approach is different from traditional parser code generation methods.  Traditional methods require the use of a lexical analyzer generator tool and parser generator tool; each with their own input specification formats (see figure~\ref{fig:TraditionalCodeGenProcess}).
+Grammar elements are translated by the prototype code generation tool into classes that serve a three-fold purpose.  Each grammar class can (1) unmarshal raw input data into specific user-defined types, (2) verify matches to byte patterns in the raw input data, and (3) marshal the values stored in the grammar class back into their original form and byte ordering.  Patterns in data arriving through TEBNF input methods are located by the state machine using unmarshal functions of grammar element classes.  As data arrives through an input method, patterns are recognized in the data by the grammar classes and simultaneously unmarshaled into the data types of those classes.  This means lexical analysis and parsing are performed in the same step, using a single TEBNF input (figure~\ref{fig:GeneratedCodeExecutionPath}).  This approach is different from traditional parser code generation methods.  Traditional methods require the use of a lexical analyzer generator tool and parser generator tool; each with their own input specification formats (see figure~\ref{fig:TraditionalCodeGenProcess}).
 
 \section{State Machine and Actions Code Generation}
 Path(s) of execution are defined in TEBNF using state machines, as shown in figure~\ref{fig:GeneratedCodeExecutionPath}.  State machines are represented in TEBNF using state transition table elements (see appendix~\ref{appendix:TEBNF}).  A state machine in TEBNF describes the order of tasks executed by a single application thread.  States are divided into a series of six steps.  These six steps are given below, in the order they are expressed in TEBNF, which is the same order they are evaluated by the generated code:
@@ -127,17 +127,3 @@ Path(s) of execution are defined in TEBNF using state machines, as shown in figu
 
 \indent
 These state steps shape the way TEBNF elements interact with each other and input data by determining (1) what input methods data is received on, (2) what parts of the received data match defined grammar patterns, (3) what method is used to output that data, and (4) what code actions are executed.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
