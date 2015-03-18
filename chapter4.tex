@@ -26,21 +26,18 @@ The NITF 2.1 file format is composed of a file header and one or more segments. 
 \indent
 Conditional data and/or data characteristics can be added to NITF 2.1 files. This flexibility to extend the format is done using conditional fields in the file header and subheaders indicating the existence of Tagged Record Extensions (TREs) and Data Extension Segments (DES).  TREs contain data fields, while extension segments can contain data in new formats.
 
-\begin{table}[htb]
-\begin{center}
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.9\textwidth]{figures/TreComparison.png}
 \caption{TEBNF Implementation of the NITF 2.1 USE00A TRE.}
-\label{tre}
-\begin{tabular}{c}
-\includegraphics[height=15cm]{figures/TreComparison.png}
-\end{tabular}
-\end{center}
-\end{table}
+\label{fig:tre}
+\end{figure}
 
 \indent
-Gleaning data from NITF 2.1 formatted files for exploitation (see figure~\ref{fig:NitfConops}) is best achieved using applications that can read it.  Table~\ref{tre} demonstrates how this can be achieved using a TEBNF grammar.  The table shows a side-by-side comparison of the NITF 2.1 USE00A (Exploitation Usability Extension Format) TRE compared to its equivalent implementation in TEBNF.  Each data field for this TRE is compared to its equivalent TEBNF grammar expression.  This comparison highlights several important advantages of using TEBNF to implement parsers for specifications like this:
+Gleaning data from NITF 2.1 formatted files for exploitation (see figure~\ref{fig:NitfConops}) is best achieved using applications that can read it.  Figure~\ref{tre} demonstrates how this can be achieved using a TEBNF grammar.  The table shows a side-by-side comparison of the NITF 2.1 USE00A (Exploitation Usability Extension Format) TRE compared to its equivalent implementation in TEBNF.  Each data field for this TRE is compared to its equivalent TEBNF grammar expression.  This comparison highlights several important advantages of using TEBNF to implement parsers for specifications like this:
 \begin{itemize}
   \item Convenience.  There is no need to keep track of the offset of each data field because it is determined based on the size of each type.
-  \item Readability.  TEBNF grammar syntax looks very similar to actual specifications as shown in Table~\ref{tre}, which means it is easier to understand.
+  \item Readability.  TEBNF grammar syntax looks very similar to actual specifications as shown in figure~\ref{tre}, which means it is easier to understand.
   \item Self-documenting.  Since TEBNF grammar syntax ties the size of each data field to the size of the subelement type, the grammar helps to document itself. 
 \end{itemize}
 
