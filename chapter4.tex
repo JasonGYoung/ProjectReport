@@ -1,5 +1,5 @@
 \chapter{Implementation}
-This chapter focuses on the implementation of applications using TEBNF and the TEBNF code generation tool.  The chapter is divided into four sections.  The first section will showcase a real world example using a TEBNF grammar that can parse part of a NITF file.  The second section will walk through the implementation of two test cases.  The third section will cover the testing and verification of these test cases.  The fourth section of the chapter will cover the results of testing.
+This chapter focuses on the implementation of applications using TEBNF and the TEBNF code generation tool.  The chapter is divided into four sections.  The first section will showcase a real world example using a TEBNF grammar to parse data from a NITF file.  The second section will walk through the implementation of two test cases.  The third section will cover the testing and verification of these test cases.  The fourth section of the chapter will cover the results of testing.
 
 \section{NITF File Parsing: A Real World Example}
 Software developers are oftentimes tasked to write software that parses and processes data in different formats.  A well-known example is word processing software.  Word processing software must be able to open and read documents structured in its own proprietary format and others (e.g. pdf, txt, etc.).  Creating software that reads specific data formats requires access to documentation detailing the exact structure of each format.
@@ -15,13 +15,13 @@ An example data format read by different applications is the National Imagery Tr
 \end{figure}
 
 \indent
-As explained by \cite{2500c_01}, the stated purpose of the NITF 2.1 file format is to provide the IC an interoperable means of transmission and/or storage of electronic imagery data.  The intended usage of NITF 2.1 formatted data is to provide a way to disseminate imagery derived intelligence to requestors of that data.  A general concept of operations (CONOPs) involving NITF data is shown in figure~\ref{fig:NitfConops}.  First, imagery data in NITF 2.1 format is requested by an IC member.  Second, the NITF data is received and combined with other collateral information to create intelligence report file(s) and/or products containing the requestor’s Essential Elements of Information (EEI).  Third, these report files are given to the requestor of that intelligence information.
+As explained by \cite{2500c_01}, the stated purpose of the NITF 2.1 file format is to provide the IC an interoperable means of transmission and/or storage of electronic imagery data.  The intended usage of NITF 2.1 formatted data is to provide a way to disseminate imagery derived intelligence to requestors of that data.  A general concept of operations (CONOPs) involving NITF data is shown in figure~\ref{fig:NitfConops}.  First, imagery data in NITF 2.1 format is requested by an IC member.  Second, the NITF data is received and combined with other collateral information to create intelligence report file(s) and/or products containing the requestor’s Essential Elements of Information (EEI).  Third, these report files and/or products are given to the requestor of that intelligence information.
 
 \indent
-Exploiting NITF 2.1 files requires a detailed understanding of the format.  With this understanding, it is possible to create software than can parse NITF 2.1 files to find information of interest to generated EEI report/product files.
+Exploiting NITF 2.1 files requires a detailed understanding of the format.  With this understanding, it is possible to create software than can parse NITF 2.1 files to find information of interest (i.e. EEI), generate report files, and/or products.
 
 \indent
-The NITF 2.1 file format is composed of a file header and one or more segments.  Each segment contains a subheader with data fields.  Each data field has a specific size and format (depending on the type of field), and is located at a specific byte offset within the file.
+The NITF 2.1 file format is composed of a file header and one or more segments.  Each segment contains a subheader with data fields.  Each data field has a specific size and format (depending on the type of field) and is located at a specific byte offset within the file.
 
 \indent
 Conditional data and/or data characteristics can be added to NITF 2.1 files. This flexibility to extend the format is done using conditional fields in the file header and subheaders indicating the existence of Tagged Record Extensions (TREs) and Data Extension Segments (DES).  Tagged Record Extensions contain data fields, while extension segments can contain data in new formats.
@@ -34,10 +34,10 @@ Conditional data and/or data characteristics can be added to NITF 2.1 files. Thi
 \end{figure}
 
 \indent
-Gleaning data from NITF 2.1 formatted files for exploitation (see figure~\ref{fig:NitfConops}) is best achieved using applications that can read it.  Figure~\ref{tre} demonstrates how this can be achieved using a TEBNF grammar.  The table shows a side-by-side comparison of the NITF 2.1 USE00A (Exploitation Usability Extension Format) TRE compared to its equivalent implementation in TEBNF.  Each data field for this TRE is compared to its equivalent TEBNF grammar expression.  This comparison highlights several important advantages of using TEBNF to implement parsers for specifications like this:
+Gleaning data from NITF 2.1 formatted files for exploitation (see figure~\ref{fig:NitfConops}) is best achieved using applications that can read it.  Figure~\ref{tre} demonstrates how this can be achieved using a TEBNF grammar.  The table shows a side-by-side comparison of the NITF 2.1 USE00A (Exploitation Usability Extension Format) TRE compared to its equivalent implementation in TEBNF.  Each data field for this TRE is compared to its equivalent TEBNF grammar expression.  This comparison highlights several important advantages of using TEBNF to implement parsers of specifications like NITF:
 \begin{itemize}
   \item Convenience.  There is no need to keep track of the offset of each data field because it is determined based on the size of each type.
-  \item Readability.  TEBNF grammar syntax looks very similar to actual specifications as shown in figure~\ref{tre}, which means it is easier to understand.
+  \item Readability.  TEBNF grammar syntax looks very similar to actual specifications as shown in figure~\ref{tre}, making it is easier to understand.
   \item Self-documenting.  Since TEBNF grammar syntax ties the size of each data field to the size of the subelement type, the grammar helps to document itself. 
 \end{itemize}
 
@@ -70,16 +70,16 @@ Acceptable input values for the calculator are limited to integers or one of fiv
 \end{figure}
 
 \indent
-The last TEBNF element to be added to the grammar describes the calculator as a state machine utilizing the elements described above to describe the execution path of the calculator.  The calculator state machine is represented with five states, as shown in figure~\ref{fig:CalculatorUmlStateMachine}.
+The last TEBNF element included in the grammar describes the calculator as a state machine utilizing the elements described above to define the execution path of the calculator.  The calculator state machine is represented with five states, as shown in figure~\ref{fig:CalculatorUmlStateMachine}.
 
 \indent
-The first state of the machine is a special case entered only once at the beginning of execution.  This initial state is a necessary special case that sets the ongoing result value for subsequent math operations.  In this state the user is prompted to enter the initial number via the console input element.  The number grammar element unmarshals this input value as a signed 64-bit integer and retains a copy for later use.  The state table then executes an actions element that sets the result static variable equal to the unmarshaled value and transitions to the next state.
+The first state of the machine is a special case entered only once at the beginning of execution.  This initial state is a necessary special case that sets the ongoing result value for subsequent math operations.  In this state the user is prompted to enter the initial number via the console input element.  The number grammar element unmarshals this input value as a signed 64-bit integer and retains a copy for later use.  The state table then executes an actions element.  This actions element sets the result static variable equal to the unmarshaled value and transitions to the next state.
 
 \indent
 After setting the result value, the machine transitions to the first state of the main cycle and uses the console input element to prompt the user to enter a number again.  This number is also unmarshaled from input and stored as before.  The state machine then transitions to the next state.
 
 \indent
-This state uses the console input element to prompt the user to enter one of the supported math operators.  The state machine does this by moving through a series of “else if” states, with each state using one of the math operator grammar elements to check the same console input for a match.  A match occurs when a grammar successfully unmarshals the input value.  Upon success, the actions element tied to that state is executed by the machine, performing one of the supported math operations.  At this point, the machine transitions to the next state, which is determined from the operator entered by the user.  If a ‘=’ operator was entered, the result is written to the console and the state machine exits.  Otherwise the machine transitions to the print state and writes the result to the console.  The print state then transitions to the first state of the main cycle, which continues to repeat until the user enters a ‘=’ to exit.
+This state uses the console input element to prompt the user to enter one of the supported math operators.  The state machine does this by moving through a series of “else-if” states.  Each state uses one of the math operator grammar elements to check the same console input for a match.  A match occurs when a grammar successfully unmarshals the input value.  Upon success, the actions element tied to that state is executed by the machine, performing one of the supported math operations.  At this point, the machine transitions to the next state, which is determined from the operator entered by the user.  If a '=' operator was entered, the result is written to the console and the state machine exits.  Otherwise the machine transitions to the print state and writes the result to the console.  The print state then transitions to the first state of the main cycle, which continues to repeat until the user enters a '=' to exit.
 
 \begin{table}[h]
 \begin{center}
@@ -96,17 +96,18 @@ This state uses the console input element to prompt the user to enter one of the
 111	& *	& 333   \\ \hline
 33	& -	& 300   \\ \hline
 20	& /	& 15    \\ \hline
-5	& *	& 75    \\
+5	& *	& 75    \\ \hline
+0   & = & 75    \\
 \hline                                  
 \end{tabular}
 \end{center}
 \end{table}
 
 \indent
-Suppose this calculator is run using the sample data in table~\ref{sampleCalculatorIoData}.  The first line in the table is the initial value 5.  The second operand entered by the user is the number 10.  The ''+'' operator is entered by the user, and the result displayed is 15.  Entering the next value of 95 followed by the operator ''-'' displays the number -80.  This cycle continues until the user enters the ''=''  operator.
+Suppose this calculator is run using the sample data in table~\ref{sampleCalculatorIoData}.  The first line in the table is the initial value 5.  The second operand entered by the user is the number 10.  The '+' operator is entered by the user, and the result displayed is 15.  Entering the next value of 95 followed by the operator '-' displays the number -80.  This cycle continues until the user enters the '='  operator.
 
 \subsection{NITF 2.1 UDP/IP File Transfer Client}
-The second test case is a file transfer client that receives NITF 2.1 files over UDP/IP upon requesting them from a file server.  The server tells the client when it is done sending files so the client knows when to exit.  This required the tool to generate code for a file client that:
+The second test case is a file transfer client that receives NITF 2.1 files over UDP/IP upon requesting them from a file server.  The server tells the client when it is done sending files so the client knows when to exit.  This requires the tool to generate code for a file client that:
 \begin{enumerate}
   \item Asks the server to send it a file by sending it a message over a UDP/IP output.
   \item Receives the NITF 2.1 file from the server over a UDP/IP input.
@@ -116,13 +117,13 @@ The second test case is a file transfer client that receives NITF 2.1 files over
 \end{enumerate}
 
 \indent
-The NITF 2.1 file transfer client starts by prompting the user to enter the IP address and port that will be used for sending and receiving data over UDP/IP.  After entering this information, the client immediately sends the message “send” to the server to request that it send a file.  Once the server receives the “send” message from the client, it reads a NITF 2.1 file from disk begins sending it to the client over UDP/IP.  As the client receives data from the server, it continually checks to see if it has received the entire NITF 2.1 file from the server.  The client knows a file transfer is complete when it has received the amount of data specified in the NITF file’s file length data field.  The client then prompts the user to enter a path including the file name specifying where the file will be written to disk.  After writing the file to disk, the client requests the next file from the server.
+The NITF 2.1 file transfer client starts by prompting the user to enter the IP address and port that will be used for sending and receiving data over UDP/IP.  After entering this information, the client immediately sends the message "“send”" to the server to request that it send a file.  Once the server receives the "“send"” message from the client, it reads a NITF 2.1 file from disk and begins sending it to the client over UDP/IP.  As the client receives data from the server, it continually checks to see if it has received the entire NITF 2.1 file from the server.  The client knows a file transfer is complete when it has received the amount of data specified in the NITF file’s file length data field.  The client then prompts the user to enter a path including the file name specifying where the file will be written to disk.  After writing the file to disk, the client requests the next file from the server.
 
 \indent
 Allowed input values for the client are limited to a string for the IP address, an unsigned integer for the port, and strings for file paths.  All other input to the client comes from the server through a TEBNF UDP/IP input element.  A UDP/IP output element is used by the client to send data to the server.  One file output element is used by the client for writing files to disk received from the server.
 
 \indent
-A grammar element was created to find NITF 2.1 files in data received over UDP/IP.  The beginning of each NITF 2.1 file can be found by searching for the byte sequence "NITF02.10", which is always found at the beginning of each file.  The NITF 2.1 file header has a data field containing the length of the file.  This is leveraged by the TEBNF grammar element to calculate the end offset of each file.   A second grammar element was created for finding the “done” message in incoming data.  A third grammar was created to define the “send” message.
+A grammar element was created to find NITF 2.1 files in data received over UDP/IP.  The beginning of each NITF 2.1 file can be found by searching for the byte sequence "NITF02.10", which is always found at the beginning of each file.  The NITF 2.1 file header has a data field containing the length of the file.  This is leveraged by the TEBNF grammar element to calculate the end offset of each file.   A second grammar element was created for finding the "“done”" message in incoming data.  A third grammar was created to define the send message.
 
 \begin{figure}[htbp]
 \centering
@@ -135,7 +136,7 @@ A grammar element was created to find NITF 2.1 files in data received over UDP/I
 The file transfer client can be represented as a state machine with three states, as shown in figure~\ref{fig:NitfFileClientUmlStateMachine}.  The first state sends the “send” message via the UDP/IP output element to the file server.  After sending this request message, the machine transitions to the second state.
 
 \indent
-The second state looks at data received from the file server over the UDP/IP input element to determine if it contains a NITF 2.1 file or the “done” message.  If the incoming data contains a file, the state machine writes it to the file output element, which prompts the user for a path to write the file to.  The state machine then transitions back to the first state which tells the server to send the next file.  If the incoming data does not contain a file, an “else-if” case in this same state checks for the “done” message.  If the done message was received, the machine writes a message to the console output telling the user that all files have been received, after which the machine transitions to the quit state and exits.
+The second state looks at data received from the file server over the UDP/IP input element to determine if it contains a NITF 2.1 file or the "“done”" message.  If the incoming data contains a file, the state machine writes it to the file output element, which prompts the user for a path to write the file to.  The state machine then transitions back to the first state which tells the server to send the next file.  If the incoming data does not contain a file, an "“else-if”" case in this same state checks for the “done” message.  If the done message was received, the machine writes a message to the console output telling the user that all files have been received, after which the machine transitions to the quit state and exits.
 
 \indent
 In a hypothetical case, assume there are five NITF 2.1 files to be sent to a test case file client.  Each file has a specific file size, as shown in table~\ref{sampleNitfSizeServerData}.
@@ -156,10 +157,10 @@ In a hypothetical case, assume there are five NITF 2.1 files to be sent to a tes
 \end{table}
 
 \indent
-The NITF 2.1 file server would be started and begin listening on its UDP/IP socket for the "send" request from a client.  The test case file client is then started and immediately sends a "send" request to the server, and a file transfer begins.  The UDP server reports the size in bytes of each file sent.  The file client writes each file to local disk.  The size in bytes of each file received corresponds to the size file sent by the server.
+The NITF 2.1 file server would be started and begin listening on its UDP/IP socket for the "send" request from a client.  The test case file client is then started and immediately sends a "send" request to the server, and a file transfer begins.  The UDP server reports the size in bytes of each file sent.  The file client writes each file to local disk.  The size in bytes of each file received corresponds to the size the files sent by the server.
 
 \section{Results}
-C++ 11 Code was successfully generated by the TEBNF code generation tool for each of the test cases.  The TEBNF code generation tool provides useful output when it generates code from a supplied input grammar.  The tool displays information  indicating when each stage of the code generation process finishes.  Status for the generation stage displays the classes generated for each element.  After the  generation stage finishes and all of the code has been generated, the tool reports success and the number of element files generated.  Console output from generating code for the calculator test case and the NITF 2.1 file client test case is shown in figures~\ref{fig:TestCaseBuildCalculator} and ~\ref{fig:TestCaseBuildNitfReceiver}.
+C++ 11 code was successfully generated by the TEBNF code generation tool for each of the test cases.  The TEBNF code generation tool provides useful output when it generates code from a supplied input grammar.  The tool displays information  indicating when each stage of the code generation process finishes.  Status for the generation stage displays the classes generated for each element.  After the  generation stage finishes and all of the code has been generated, the tool reports success and the number of element files generated.  Console output from generating code for the calculator test case and the NITF 2.1 file client test case is shown in figures~\ref{fig:TestCaseBuildCalculator} and ~\ref{fig:TestCaseBuildNitfReceiver}.
 
 \begin{figure}[h!]
 \centering
@@ -189,7 +190,7 @@ The calculator test case executable was run using the test data from table~\ref{
 \end{figure}
 
 \subsection{NITF 2.1 File Client}
-The NITF 2.1 file client test case executable was run using the five sample NITF 2.1 files whose sizes are found in table~\ref{sampleNitfSizeServerData}.  A NITF 2.1 file server was created that listened for client "send" requests over a UDP/IP socket on localhost port 10042.  This server was started, then the test case client was started and configured to send requests and receive file transfers on localhost port 10042.  The expected outcome occurred, with the server successfully sending five files as indicated by the first five send messages output by the server in figure~\ref{fig:TestCaseRunNitfServer}, followed by the last four byte "done" message is sent to notify the client it was done sending.  The same five files were received by the client which prompted for a file name to save each file as shown in  figure~\ref{fig:TestCaseRunNitfReceiver}.  After saving the files, the client exited because the server had sent the "done" message.
+The NITF 2.1 file client test case executable was run using the five sample NITF 2.1 files whose sizes are found in table~\ref{sampleNitfSizeServerData}.  A NITF 2.1 file server was created that listened for client "send" requests over a UDP/IP socket on localhost port 10042.  This server was started, then the test case client was started and configured to send requests and receive file transfers on localhost port 10042.  The expected outcome occurred, with the server successfully sending five files as indicated by the first five send messages output by the server in figure~\ref{fig:TestCaseRunNitfServer}.  This was followed by the last four byte "done" message is sent to notify the client it was done sending.  The same five files were received by the client which prompted for a file name to save each file as shown in  figure~\ref{fig:TestCaseRunNitfReceiver}.  After saving the files, the client exited because the server had sent the "done" message.
 
 \begin{figure}[h!]
 \centering

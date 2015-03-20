@@ -118,11 +118,11 @@ Grammar elements are translated by the prototype code generation tool into class
 Path(s) of execution are defined in TEBNF using state machines, as shown in figure~\ref{fig:GeneratedCodeExecutionPath}.  State machines are represented in TEBNF using state transition table elements (see appendix~\ref{appendix:TEBNF}).  A state machine in TEBNF describes the order of tasks executed by a single application thread.  States are divided into a series of six steps.  These six steps are given below, in the order they are expressed in TEBNF, which is the same order they are evaluated by the generated code:
 \begin{enumerate}
   \item A unique name that identifies the state and allows other states to reference it
-  \item A Boolean condition that can be either a grammar to match with input data, or an explicit Boolean condition.
+  \item A Boolean condition that can be either a grammar to match with input data or an explicit Boolean condition.
   \item The method of input for receiving the input data (console, file, or UDP/IP).
   \item The next state to jump to if the Boolean condition provided in the second step evaluates to true.
-  \item An output or action to send through the output method provided in the sixth step.
-  \item The method of output to send through the output method provided in the fifth step, or an explicit code action to execute.
+  \item An output to send through the output method provided in the sixth step, an explicit code action to execute, or nothing.
+  \item The output method to send output specified in the fifth step.  If an action or nothing was provided for the fifth step, then this step is empty as well.
 \end{enumerate}
 
 \indent
