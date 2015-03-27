@@ -1,43 +1,43 @@
-\chapter{Implementation}
-This chapter focuses on the implementation of applications using TEBNF and the TEBNF code generation tool.  The chapter is divided into four sections.  The first section will showcase a real world example using a TEBNF grammar to parse data from a NITF file.  The second section will walk through the implementation of two test cases.  The third section will cover the testing and verification of these test cases.  The fourth section of the chapter will cover the results of testing.
+\chapter{Implementating Tools with TEBNF}
+This chapter focuses on the implementation of applications using TEBNF and the TEBNF code generation tool.  The chapter is divided into four sections.  The first section will showcase a real world example using a TEBNF grammar to parse data from a National Imagery Transmission Format (NITF) version 2.1 file.  The second section will walk through the implementation of two test cases.  The third section will cover the testing and verification of these test cases.  The fourth section of the chapter will cover the results of testing.
 
 \section{NITF File Parsing: A Real World Example}
 Software developers are oftentimes tasked to write software that parses and processes data in different formats.  A well-known example is word processing software.  Word processing software must be able to open and read documents structured in its own proprietary format and others (e.g. pdf, txt, etc.).  Creating software that reads specific data formats requires access to documentation detailing the exact structure of each format.
 
 \indent
-An example data format read by different applications is the National Imagery Transmission Format (NITF) version 2.1 file format.  The NITF 2.1 file format is part of a suite of standards established by the United States (US) Government for formatting digital imagery \cite{2500c_01}.  Documentation detailing the NITF 2.1 standard is freely available for download from the Geospatial Intelligence Standards Working Group’s website \cite{gwg_01}.  This file format is compatible with software used by members of the Intelligence Community (IC), which includes the US Department of Defense (DOD) \cite{2500c_01}.  The VANTAGE\textsuperscript{TM} software suite produced by the Space Dynamics Laboratory and the SOCET Services suite produced by BAE Systems are all capable of reading and exploiting NITF 2.1 formatted files \cite{sdl_01,bae_01}.
+An example data format read by different applications is the NITF 2.1 file format.  The NITF 2.1 file format is part of a suite of standards established by the United States (US) Government for formatting digital imagery \cite{2500c_01}.  Documentation detailing the NITF 2.1 standard is freely available for download from the Geospatial Intelligence Standards Working Group’s website \cite{gwg_01}.  This file format is compatible with software used by members of the intelligence community, which includes the US Department of Defense \cite{2500c_01}.  The VANTAGE\textsuperscript{TM} software suite produced by the Space Dynamics Laboratory and the SOCET Services suite produced by BAE Systems are all capable of reading and exploiting NITF 2.1 formatted files \cite{sdl_01,bae_01}.
 
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.9\textwidth]{figures/NitfConops.png}
-\caption{CONOPs for NITF 2.1 format files.}
+\caption{Concept of operations for NITF 2.1 format files.}
 \label{fig:NitfConops}
 \end{figure}
 
 \indent
-As explained by \cite{2500c_01}, the stated purpose of the NITF 2.1 file format is to provide the IC an interoperable means of transmission and/or storage of electronic imagery data.  The NITF 2.1 format is intended to be used in the dissemination of imagery derived intelligence data.  A general concept of operations (CONOPs) involving NITF data is shown in figure~\ref{fig:NitfConops}.  First, imagery data in NITF 2.1 format is requested by an IC member.  Second, the NITF data is received and combined with other collateral information to create intelligence report file(s) and/or products containing the requestor’s Essential Elements of Information (EEI).  Third, these report files and/or products are given to the requestor of that intelligence information.
+As explained by \cite{2500c_01}, the stated purpose of the NITF 2.1 file format is to provide the intelligence community an interoperable means of transmission and/or storage of electronic imagery data.  The NITF 2.1 format is intended to be used in the dissemination of imagery derived intelligence data.  A general concept of operations involving NITF data is shown in figure~\ref{fig:NitfConops}.  First, imagery data in NITF 2.1 format is requested by a member of the intelligence community.  Second, the NITF data is received and combined with other collateral information to create intelligence report file(s) and/or products containing   the requested information of interest.  Third, these report files and/or products are given to the requestor of that intelligence information.
 
 \indent
-Exploiting NITF 2.1 files requires a detailed understanding of the format.  With this understanding, it is possible to create software than can parse NITF 2.1 files to find information of interest (i.e. EEI), generate report files, and/or products.
+Exploiting NITF 2.1 files requires a detailed understanding of the format.  With this understanding, it is possible to create software than can parse NITF 2.1 files to find information of interest, generate report files, and/or products.
 
 \indent
 The NITF 2.1 file format is composed of a file header and one or more segments.  Each segment contains a subheader with data fields.  Each data field has a specific size and format (depending on the type of field) and is located at a specific byte offset within the file.
 
 \indent
-Conditional data and/or data characteristics can be added to NITF 2.1 files. This flexibility to extend the format is done using conditional fields in the file header and subheaders indicating the existence of Tagged Record Extensions (TREs) and Data Extension Segments (DES).  Tagged Record Extensions contain data fields, while extension segments can contain data in new formats.
+Conditional data and/or data characteristics can be added to NITF 2.1 files. This flexibility to extend the format is done using conditional fields in the file header and subheaders indicating the existence of Tagged Record Extensions (TREs) and Data Extension Segments.  Tagged Record Extensions contain data fields, while extension segments can contain data in new formats.
 
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.9\textwidth]{figures/TreComparison.png}
-\caption{TEBNF Implementation of the NITF 2.1 USE00A TRE.}
+\caption[TEBNF Implementation of the NITF 2.1 USE00A TRE]{TEBNF Implementation of the NITF 2.1 USE00A TRE (TRE information taken from \cite{use001_01}).}
 \label{fig:tre}
 \end{figure}
 
 \indent
-Gleaning data from NITF 2.1 formatted files for exploitation (see figure~\ref{fig:NitfConops}) is best achieved using applications that can read it.  Figure~\ref{tre} demonstrates how this can be achieved using a TEBNF grammar.  The table shows a side-by-side comparison of the NITF 2.1 USE00A (Exploitation Usability Extension Format) TRE compared to its equivalent implementation in TEBNF.  Each data field for this TRE is compared to its equivalent TEBNF grammar expression.  This comparison highlights several important advantages of using TEBNF to implement parsers of specifications like NITF:
+Gleaning data from NITF 2.1 formatted files for exploitation (see figure~\ref{fig:NitfConops}) is best achieved using applications that can read it.  Figure~\ref{fig:tre} demonstrates how this can be achieved using a TEBNF grammar.  The table shows a side-by-side comparison of the NITF 2.1 USE00A (Exploitation Usability Extension Format) TRE \cite{use001_01} compared to its equivalent implementation in TEBNF.  Each data field for this TRE is compared to its equivalent TEBNF grammar expression.  This comparison highlights several important advantages of using TEBNF to implement parsers of specifications like NITF:
 \begin{itemize}
   \item Convenience.  There is no need to keep track of the offset of each data field because it is determined based on the size of each type.
-  \item Readability.  TEBNF grammar syntax looks very similar to actual specifications as shown in figure~\ref{tre}, making it is easier to understand.
+  \item Readability.  TEBNF grammar syntax looks very similar to actual specifications as shown in figure~\ref{fig:tre}, making it is easier to understand.
   \item Self-documenting.  Since TEBNF grammar syntax ties the size of each data field to the size of the subelement type, the grammar helps to document itself. 
 \end{itemize}
 
@@ -65,15 +65,15 @@ Acceptable input values for the calculator are limited to integers or one of fiv
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.9\textwidth]{figures/CalculatorUmlStateMachine.png}
-\caption{State machine representing a calculator.}
+\caption[State machine representing a calculator.]{State machine representing a calculator (includes pseudocode).}
 \label{fig:CalculatorUmlStateMachine}
 \end{figure}
 
 \indent
-The last TEBNF element included in the grammar describes the calculator as a state machine utilizing the elements described above to define the execution path of the calculator.  The calculator state machine is represented with five states, as shown in figure~\ref{fig:CalculatorUmlStateMachine}.
+The last TEBNF element included in the grammar describes the calculator as a state machine utilizing the elements described above to define the execution path of the calculator.  The TEBNF grammar that implements this calculator is provided in listing~\ref{ExampleCalculator}.
 
 \indent
-The first state of the machine is a special case entered only once at the beginning of execution.  This initial state is a necessary special case that sets the ongoing result value for subsequent math operations.  In this state the user is prompted to enter the initial number via the console input element.  The number grammar element unmarshals this input value as a signed 64-bit integer and retains a copy for later use.  The state table then executes an actions element.  This actions element sets the result static variable equal to the unmarshaled value and transitions to the next state.
+The calculator state machine is represented with five states, as shown in figure~\ref{fig:CalculatorUmlStateMachine}.  The first state of the machine is a special case entered only once at the beginning of execution.  This initial state is a necessary special case that sets the ongoing result value for subsequent math operations.  In this state the user is prompted to enter the initial number via the console input element.  The number grammar element unmarshals this input value as a signed 64-bit integer and retains a copy for later use.  The state table then executes an actions element.  This actions element sets the result static variable equal to the unmarshaled value and transitions to the next state.
 
 \indent
 After setting the result value, the machine transitions to the first state of the main cycle and uses the console input element to prompt the user to enter a number again.  This number is also unmarshaled from input and stored as before.  The state machine then transitions to the next state.
@@ -123,12 +123,12 @@ The NITF 2.1 file transfer client starts by prompting the user to enter the IP a
 Allowed input values for the client are limited to a string for the IP address, an unsigned integer for the port, and strings for file paths.  All other input to the client comes from the server through a TEBNF UDP/IP input element.  A UDP/IP output element is used by the client to send data to the server.  One file output element is used by the client for writing files to disk received from the server.
 
 \indent
-A grammar element was created to find NITF 2.1 files in data received over UDP/IP.  The beginning of each NITF 2.1 file can be found by searching for the byte sequence "NITF02.10", which is always found at the beginning of each file.  The NITF 2.1 file header has a data field containing the length of the file.  This is leveraged by the TEBNF grammar element to calculate the end offset of each file.   A second grammar element was created for finding the "“done”" message in incoming data.  A third grammar was created to define the send message.
+A grammar element was created to find NITF 2.1 files in data received over UDP/IP.  The beginning of each NITF 2.1 file can be found by searching for the byte sequence "NITF02.10", which is always found at the beginning of each file.  The NITF 2.1 file header has a data field containing the length of the file.  This is leveraged by the TEBNF grammar element to calculate the end offset of each file.   A second grammar element was created for finding the "“done”" message in incoming data.  A third grammar was created to define the send message.  The TEBNF grammar that implements this file transfer client is provided in listing~\ref{ExampleUDPNitfReceiver}.
 
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.9\textwidth]{figures/NitfFileClientUmlStateMachine.png}
-\caption{State machine representing a NITF 2.1 UDP/IP file transfer client.}
+\caption[State machine representing a NITF 2.1 UDP/IP file transfer client]{State machine representing a NITF 2.1 UDP/IP file transfer client (includes pseudocode).}
 \label{fig:NitfFileClientUmlStateMachine}
 \end{figure}
 
@@ -160,7 +160,7 @@ In a hypothetical case, assume there are five NITF 2.1 files to be sent to a tes
 The NITF 2.1 file server would be started and begin listening on its UDP/IP socket for the "send" request from a client.  The test case file client is then started and immediately sends a "send" request to the server, and a file transfer begins.  The UDP server reports the size in bytes of each file sent.  The file client writes each file to local disk.  The size in bytes of each file received corresponds to the size the files sent by the server.
 
 \section{Results}
-C++ 11 code was successfully generated by the TEBNF code generation tool for each of the test cases.  The TEBNF code generation tool provides useful output when it generates code from a supplied input grammar.  The tool displays information  indicating when each stage of the code generation process finishes.  Status for the generation stage displays the classes generated for each element.  After the  generation stage finishes and all of the code has been generated, the tool reports success and the number of element files generated.  Console output from generating code for the calculator test case and the NITF 2.1 file client test case is shown in figures~\ref{fig:TestCaseBuildCalculator} and ~\ref{fig:TestCaseBuildNitfReceiver}.
+C++ code was successfully generated by the TEBNF code generation tool for each of the test cases.  The TEBNF code generation tool provides useful output when it generates code from a supplied input grammar.  The tool displays information  indicating when each stage of the code generation process finishes.  Status for the generation stage displays the classes generated for each element.  After the  generation stage finishes and all of the code has been generated, the tool reports success and the number of element files generated.  Console output from generating code for the calculator test case and the NITF 2.1 file client test case is shown in figures~\ref{fig:TestCaseBuildCalculator} and ~\ref{fig:TestCaseBuildNitfReceiver}.
 
 \begin{figure}[h!]
 \centering
@@ -207,4 +207,4 @@ The NITF 2.1 file client test case executable was run using the five sample NITF
 \end{figure}
 
 \indent
-The sizes of the files received were an exact match to the file sizes listed in table~\ref{sampleNitfSizeServerData}, as the output of the server and client test case executables show in figures~\ref{fig:TestCaseRunNitfServer} and ~\ref{fig:TestCaseRunNitfReceiver}, respectively.  This verifies that the behavior of the NITF 2.1 client test case matches the behavior defined in the TEBNF grammar it was generated from.
+The sizes of the files received were an exact match to the file sizes listed in table~\ref{sampleNitfSizeServerData}, as the output of the server and client test case executables show in figures~\ref{fig:TestCaseRunNitfServer} and~\ref{fig:TestCaseRunNitfReceiver}, respectively.  This verifies that the behavior of the NITF 2.1 client test case matches the behavior defined in the TEBNF grammar it was generated from.

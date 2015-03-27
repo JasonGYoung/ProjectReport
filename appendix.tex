@@ -22,7 +22,7 @@ The structure of TEBNF is composed of a set of elements.  There are five kinds o
 \label{sec:TEBNFElementsAndSubelements}
 TEBNF elements (table~\ref{TEBNFElements}) contain one or more subelements.  Subelements within TEBNF consist of production rules, typed terminals, non-typed terminals, literal values, operators, states, and static variables.
 
-\begin{table}[h]
+\begin{table}[h!]
 \begin{center}
 \caption{TEBNF Elements.}
 \label{TEBNFElements}
@@ -54,7 +54,7 @@ Elements and subelements are directly accessible at the scope they are created, 
 \label{sec:TEBNFTypes}
 Association of types (table~\ref{TEBNFSymbols}) with terminal symbols offers an extra level of precision when matching specific patterns found in input data.  These symbols are called typed terminals.  TEBNF can infer the type of a terminal symbol because each type has two important components.
 
-\begin{table}[h]
+\begin{table}[h!]
 \begin{center}
 \caption{TEBNF symbols, production rules, non-typed terminals, and typed terminals.}
 \label{TEBNFSymbols}
@@ -111,7 +111,7 @@ A static variable can become typed when a typed terminal is assigned to it.  Pro
 \label{sec:TEBNFOperators}
 There are three categories of operators in TEBNF.  First are production rule operators (table~\ref{TEBNFProductionRuleOperators}), which are used to build production rules.  Second are arithmetic and comparison operators (table~\ref{TEBNFArithmeticAndComparisonOperators}).  Arithmetic and comparison operators are a key difference between TEBNF and standard EBNF, which does not have them.  Third is inter-element operators that perform operations on and/or between elements (table~\ref{TEBNFInterElementOperator}).  The only operator that falls in this category is the "AS" operator.
 
-\begin{table}[h]
+\begin{table}[h!]
 \begin{center}
 \caption{TEBNF production rule operators.}
 \label{TEBNFProductionRuleOperators}
@@ -141,7 +141,7 @@ $|$   & State Transition  & Start $|$ packet $|$ … \\
 \end{center}
 \end{table}
 
-\begin{table}[h]
+\begin{table}[h!]
 \begin{center}
 \caption{TEBNF arithmetic and comparison operators.}
 \label{TEBNFArithmeticAndComparisonOperators}
@@ -161,7 +161,7 @@ $|$   & State Transition  & Start $|$ packet $|$ … \\
 \end{center}
 \end{table}
 
-\begin{table}[h]
+\begin{table}[h!]
 \begin{center}
 \caption{TEBNF inter-element operator.}
 \label{TEBNFInterElementOperator}
@@ -177,19 +177,7 @@ AS & Defines a new    & OUTPUT @UDP\_Out AS \\
 
 \appendixsection{TEBNF Grammar Elements}
 \label{sec:TEBNFGrammarElements}
-Grammar elements contain production rules.  Production rules are subelements of their containing grammar element.  Terminal and non-terminal symbols have no prefix character, are made up only of alpha-numeric characters, and are case-sensitive.
-\begin{lstlisting}[basicstyle=\small,caption={A TEBNF Grammar element.},label=ExampleGrammarElement]
-  GRAMMAR @Nitf
-    # Describe the file to receive.
-    sync = 'N','I','T','F','0','2','.','1','0';
-    skip1 = BYTE{333}; # FL offset is 342.
-    fileLength = UNSIGNED INT_STR_96; # 12 bytes
-    skip2 = BYTE\{,};
-    header = sync, skip1, fileLength;
-    file = header, skip2;
-    = fileLength; # Overall size of file.
-  END
-\end{lstlisting}
+Grammar elements contain production rules.  Production rules are subelements of their containing grammar element.  Terminal and non-terminal symbols have no prefix character, are made up only of alpha-numeric characters, and are case-sensitive.  Examples of grammar elements are found in listings~\ref{ExampleCalculator} and~\ref{ExampleUDPNitfReceiver}.
 
 \indent
 Production rule subelements can only be declared within TEBNF grammar elements.  Production rule subelements can be referred to directly using the containing element’s name along with the dot operator followed by the subelement (symbol) name.
@@ -209,10 +197,10 @@ The function of any given application can be described as a finite state machine
 Representation of a finite state machine in TEBNF is done using a state transition table that can access any TEBNF input, output, grammar symbol, or static variable.  This state transition table ties the various elements and subelements of a TEBNF grammar into a coherent description of a single thread of execution.  This means that TEBNF makes it possible to represent multiple threads of execution using multiple state transition tables.  Each state transition table consists of six columns delimited by the pipe operator.  Columns flow from left to right in the following order:
 \begin{enumerate}
  \item State
- \item Input and/or condition
+ \item Input or condition
  \item Input Method
  \item Next State
- \item Output and/or action
+ \item Output or action
  \item Output Method
 \end{enumerate}
 
@@ -232,9 +220,9 @@ Actions elements contain a list of actions to be executed in the order they are 
 Table~\ref{TEBNFInputAndOutputSpecifiers} shows all of the possible inputs and outputs available in TEBNF.  Each input method describes a way for the generated application to receive input.  No other settings information is required by an input method because the generated application will provide a way for the user of to give it the needed information through the user interface.  Console elements allow prompt s to be defined within their scope, which tie a prompt string to a typed value to be input by a user.  Listing~\ref{ExampleInputElement} shows a console input element with two prompt values.  The first prompt value will display the prompt "Number: " and treat the input provided through the console as a signed 64-bit integer.  The second prompt value will display the prompt "Op: " and treat input as a signed 8-bit integer.
 
 \begin{lstlisting}[basicstyle=\small,caption={A TEBNF Console Input element.},label=ExampleInputElement]
-  INPUT @Console_In = CONSOLE
-    promptNum = INT_64 = "Number: ";
-    promptOp = INT_8 = "Op: ";
+  INPUT @ConsIn = CONSOLE
+    num = INT_64 = "Number: ";
+    op = INT_8 = "Op: ";
   END
 \end{lstlisting}
 
@@ -260,7 +248,53 @@ Networking inputs and outputs in TEBNF are based on UDP/IP.  There are many othe
 \indent
 Custom input/output (I/O) is accomplished by using the state transition table to specify which grammar is used when receiving data as input or for sending data as output.  In the case of a custom input, a GUI is generated that will ask for input to match the described grammar.  In the case of output, data will be sent to the desired output following the format described in the provided grammar.
 
-\subsection{A TEBNF Example}
+\subsection{TEBNF Example 1: Calculator}
+A TEBNF example is shown in listing~\ref{ExampleCalculator} describing a calculator that supports addition, subtraction, multiplication, and division of integers.
+
+\begin{lstlisting}[basicstyle=\small,caption={TEBNF grammar describing a calculator.},label=ExampleCalculator]
+INPUT @ConsIn = CONSOLE
+  num = INT_64 = "Number: ";
+  op = INT_8 = "Op: ";
+END
+
+OUTPUT @ConsOut = CONSOLE END
+
+GRAMMAR @Number
+  num = INT_64;
+  $result = INT_64;
+END
+
+GRAMMAR @addOp op = '+'; END
+GRAMMAR @subOp op = '-'; END
+GRAMMAR @mulOp op = '*'; END
+GRAMMAR @divOp op = '/'; END
+GRAMMAR @eqOp op = '='; END
+
+ACTIONS @Assign @Number.$result = @Number.num; END;
+ACTIONS @AddAssign @Number.$result += @Number.num; END
+ACTIONS @SubAssign @Number.$result -= @Number.num; END
+ACTIONS @MulAssign @Number.$result *= @Number.num; END
+ACTIONS @DivAssign @Number.$result /= @Number.num; END
+
+STATES @Calculator
+#----------------------------------------------------------------------
+# State  | Input or  | Input      | Next    | Output or      | Output |
+#        | Condition | Method     | State   | Action         | Method |
+#----------------------------------------------------------------------
+ Init    | @Number   | @ConsIn.num| StateNum| @Assign        |        ;
+ StateNum| @Number   | @ConsIn.num| StateOp |                |        ;
+ StateOp | @addOp    | @ConsIn.op | Print   | @AddAssign     |        ;
+         | @subOp    | @ConsIn.op | Print   | @SubAssign     |        ;
+         | @mulOp    | @ConsIn.op | Print   | @MulAssign     |        ;
+         | @divOp    | @ConsIn.op | Print   | @DivAssign     |        ;
+         | @eqOp     | @ConsIn.op | Done    | @Number.$result|@ConsOut;
+         |           |            | Done    |                |        ;
+ Print   |           |            | StateNum| @Number.$result|@ConsOut;
+ Done    |           |            |         |                |        ;
+END
+\end{lstlisting}
+
+\subsection{TEBNF Example 2: NITF 2.1 File Client}
 A TEBNF example is shown in listing~\ref{ExampleUDPNitfReceiver} that describes a client application that transfers NITF 2.1 files over UDP/IP.  This client application guarantees one-time delivery of each packet or none at all.  The generated application receives packets matching the description shown in the example’s grammar element.  Upon reception of a packet, it will increment the payloads static variable, check if all of the data (entire file) has been received, and send an ACK message to tell the sender that a packet with a specific packet number has been received successfully.  Once all of the packets have been received to reconstruct the file being sent (tracked by \$payloads), the output is written to file and \$payloads is cleared and ready to receive more file packets.
 \begin{lstlisting}[basicstyle=\small,caption={TEBNF grammar describing a UDP NITF 2.1 file transfer client.},label=ExampleUDPNitfReceiver]
 INPUT @UDP_In = UDP_IP END # UDP/IP input socket.
