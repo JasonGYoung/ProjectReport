@@ -1,11 +1,8 @@
 \chapter{Conclusion}
-TEBNF merges the strengths of declarative and imperative programming paradigms into one format.  A prototype code generation tool was presented that accepts a TEBNF grammar as its sole input specification.  The prototype code generation tool demonstrated how TEBNF makes it possible to:
-\begin{itemize}
-  \item Integrate lexical analysis and parsing input specifications into one format.
-  \item Generate C++ classes that handle I/O over console, file, or UDP/IP, and abstract the complexities of their usage through TEBNF.
-  \item Generate C++ classes that simultaneously unmarshal and match incoming input data to TEBNF grammar patterns.
-  \item Describe the execution path of an application that accepts input over various I/O methods, is able to parse that input, use it, and send output over various I/O methods.
-\end{itemize}
+Errors and inconsistencies between code components can be very costly in a software project.  It has been shown that the use of code generation tools can simplify and possibly reduce these errors and inconsistencies.  Many tools generate only one of the many components found in a typical application.  This report explored the benefits of using TEBNF as the sole input specification for the TEBNF code generation tool.
 
 \indent
-Software developers using TEBNF are able to focus on what they want to implement rather than how to represent their designs in a language like C++.  TEBNF embodies the idea of using additional levels of indirection to solve problems in computer science.
+The TEBNF input specification integrates lexical analysis and parsing input specifications into one format.  TEBNF also simplifies the implementation of applications that receive, parse, process, and output data through various I/O methods.  Many complexities involved with designing and coding applications can be abstracted using TEBNF.
+
+\indent
+The prototype TEBNF code generation tool demonstrated the effectiveness of TEBNF as an input specification.  The tool generates C++ classes that handles I/O over console, file, or UDP/IP, thereby abstracting the complexities of their usage through TEBNF.  Parsing documented formats like the NITF 2.1 format is greatly simplified using TEBNF. 

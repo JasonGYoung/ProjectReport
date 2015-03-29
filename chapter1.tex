@@ -8,11 +8,11 @@ Comprehensive requirements analysis, design, and other good software development
 Code generation tools can improve the software development process by generating well-organized code reducing implementation errors and inconsistencies \cite{boysen_01}.  Code generation has been shown to improve the productivity of developers, guarantee correctness of syntax, and decrease errors \cite{groher_01}.  A compiler is a type of code generation tool that generates binary executables from code written in higher-level programming languages like C and C++.   Some tools generate higher-level code instead of binary given a set of rules known as a grammar.  This high-level generated code is then fed to a compiler to create a binary executable.
 
 \indent
-Most high-level code generation tools are specialized and only generate one part of an application’s overall implementation.  Popular targets for specialized code generation are lexical analyzers and parsers.  One of the earliest code generation tools is the compiler-compiler (parser generator), a term first presented in the early 1960’s \cite{brooker_01}.
+Most high-level code generation tools are specialized and only generate one part of an application'’s overall implementation.  Popular targets for specialized code generation are lexical analyzers and parsers.  One of the earliest code generation tools is the compiler-compiler (parser generator), a term first presented in the early 1960’s \cite{brooker_01}.
 
-\section{The TEBNF Input Specification and TEBNF Code Generation Tool}
+\section{TEBNF Input Specification and Code Generation Tool}
 This report will present a new input specification based on Extended Backus-Naur Form (EBNF) called Typed-EBNF (TEBNF) (see appendix~\ref{appendix:TEBNF}), and a new prototype code generation tool that uses TEBNF as its input specification.  The tool will validate key features of TEBNF:
-\begin{enumerate}
+\begin{itemize}
   \item TEBNF grammars can describe input patterns that include a mixture of strings, numbers, and/or raw groupings of bytes.
   \item TEBNF integrates grammar rules with states and actions.
   \item TEBNF can specify different methods of receiving input and sending output.
@@ -23,7 +23,7 @@ This report will present a new input specification based on Extended Backus-Naur
   \item TEBNF grammars match specific pieces of a given input to well-known types of varied sizes (in bits or bytes).
   \item TEBNF supports the use of variables.
   \item TEBNF is Turing complete (see appendix~\ref{appendix:TEBNFTuringCompletenessProof}).
-\end{enumerate}
+\end{itemize}
 
 \indent
 The prototype code generation tool will demonstrate that it can generate a console application that can (1) parse data from different kinds of inputs, (2) process data to produce specific output(s), (3) direct output(s) to a network destination (UDP/IP), file, or console-based user-interface, (4) support custom network protocol handling and interaction (UDP/IP), and (5) provide a console-based user interface for the application.
