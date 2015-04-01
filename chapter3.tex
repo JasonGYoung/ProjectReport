@@ -16,6 +16,8 @@ The TEBNF specification is composed of language constructs called elements.  A T
 Within each element are separate constructs known as subelements.  Different kinds of subelements exist for each element type, and are enumerated in detail in appendix~\ref{appendix:TEBNF}.  The glue that brings these elements together to describe an application is two-fold: 1) static variables that can be defined within grammar elements and used by other elements to get and store information, and 2) state transition table elements that use all of the other elements in a grammar to express the order of task execution.
 
 \section{Design Decisions}
+Several important design decisions were made in order to improve function and reduce complexity in TEBNF.  This section discusses why these design decisions were made, how these decisions influenced the design of TEBNF, and how these decisions affected the code generated from it.
+
 \subsection{Singleton Paradigm}
 One of the primary goals of TEBNF is to reduce the difficulty of translating high-level designs into grammars.  With this goal in mind, elements have been designed to behave as singletons in TEBNF, as well as the code generated from them.
 
@@ -41,10 +43,7 @@ Support for sending and receiving data over UDP is achieved in TEBNF using UDP e
 Actions elements in TEBNF share two similarities with C++ functions. First, actions elements can have parameters, allowing arguments to be passed to them when called inside a state transition table element.  Second, actions elements can contain multiple instructions.  Actions elements are essentially C++ code blocks that allow direct reference to subelements and static variables found in grammar elements.  This means they have loose parsing requirements compared to other TEBNF elements so that the chosen C++ compiler can catch complex errors in actions element code.  The syntax for accessing subelements defined inside other grammar elements can be found in appendix~\ref{appendix:TEBNF}.
 
 \indent
-Each state within a state transition table element can execute a single action.  In some cases multiple actions need to be executed inside one state.  Because a call to an actions element qualifies as a single action inside a state, multiple actions can be executed without unduly complicating the flow of the state transition table.
-
-\indent
-Unlike C++ functions, actions elements cannot return values.  This limitation serves to maintain the clear purpose of their usage insides states and makes it clear that they are not intended to be used as the input or condition of a state.
+Unlike C++ functions, actions elements cannot return values.  This limitation serves to maintain the clear purpose of their usage in state tables and makes it clear that they are not intended to be used as the input or condition of a state.
 
 \section{The TEBNF Code Generation Tool}
 This report presents a prototype code generation tool that generates the lexical analysis, parsing, and actions code of a basic console application using a single TEBNF grammar as input.  Generated applications accept user input where necessary and can provide meaningful status.  The tool outputs a set of classes that:

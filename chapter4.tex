@@ -6,7 +6,7 @@ This chapter focuses on the implementation of applications using TEBNF and the T
 Software developers are oftentimes tasked to write software that parses and processes data in different formats.  A well-known example is word processing software.  Word processing software must be able to open and read documents structured in its own proprietary format and others (e.g. pdf, txt, etc.).  Creating software that reads specific data formats requires access to documentation detailing the exact structure of each format.
 
 \indent
-An example data format read by different applications is the NITF 2.1 file format.  The NITF 2.1 file format is part of a suite of standards established by the United States (US) Government for formatting digital imagery \cite{2500c_01}.  Documentation detailing the NITF 2.1 standard is freely available for download from the Geospatial Intelligence Standards Working Group’s website \cite{gwg_01}.  This file format is compatible with software used by members of the intelligence community, which includes the US Department of Defense \cite{2500c_01}.  The VANTAGE\textsuperscript{TM} software suite produced by the Space Dynamics Laboratory and the SOCET Services suite produced by BAE Systems are all capable of reading and exploiting NITF 2.1 formatted files \cite{sdl_01,bae_01}.
+An example data format read by different applications is the NITF 2.1 file format.  The NITF 2.1 file format is part of a suite of standards established by the United States (US) Government for formatting digital imagery \cite{2500c_01}.  Documentation detailing the NITF 2.1 standard is freely available for download from the Geospatial Intelligence Standards Working Group’s website \cite{gwg_01}.  This file format is compatible with software used by members of the intelligence community, which includes the US Department of Defense (DoD) \cite{2500c_01}.  The VANTAGE\textsuperscript{TM} software suite produced by the Space Dynamics Laboratory and the SOCET Services suite produced by BAE Systems are all capable of reading and exploiting NITF 2.1 formatted files \cite{sdl_01,bae_01}.
 
 \begin{figure}[htbp]
 \centering
@@ -74,13 +74,13 @@ Acceptable input values for the calculator are limited to integers or one of fiv
 The last TEBNF element included in the grammar describes the calculator as a state machine utilizing the elements described above to define the execution path of the calculator.  The TEBNF grammar that implements this calculator is provided in listing~\ref{ExampleCalculator}.
 
 \indent
-The calculator state machine is represented with five states, as shown in figure~\ref{fig:CalculatorUmlStateMachine}.  The first state of the machine is a special case entered only once at the beginning of execution.  This initial state is a necessary special case that sets the ongoing result value for subsequent math operations.  In this state the user is prompted to enter the initial number via the console input element.  The number grammar element unmarshals this input value as a signed 64-bit integer and retains a copy for later use.  The state table then executes an actions element.  This actions element sets the result static variable equal to the unmarshaled value and transitions to the next state.
+The calculator state machine is represented with five states, as shown in figure~\ref{fig:CalculatorUmlStateMachine}.  The first state of the machine is a special case entered only once at the beginning of execution.  This initial state is a necessary special case that sets the ongoing result value for subsequent math operations.  In this state the user is prompted to enter the initial number via the console input element.  The number grammar element unmarshals this input value as a signed 64-bit integer and retains a copy for later use.  The state table then executes an actions element.  This actions element sets the result static variable equal to the unmarshaled value while the machine transitions to the next state.
 
 \indent
-After setting the result value, the machine transitions to the first state of the main cycle and uses the console input element to prompt the user to enter a number again.  This number is also unmarshaled from input and stored as before.  The state machine then transitions to the next state.
+After setting the result value while transitioning to the first state of the main cycle, the machine uses the console input element to prompt the user to enter a number again.  This number is also unmarshaled from input and stored as before.  The state machine then transitions to the next state.
 
 \indent
-This state uses the console input element to prompt the user to enter one of the supported math operators.  The state machine does this by moving through a series of “else-if” states.  Each state uses one of the math operator grammar elements to check the same console input for a match.  A match occurs when a grammar successfully unmarshals the input value.  Upon success, the actions element tied to that state is executed by the machine, performing one of the supported math operations.  At this point, the machine transitions to the next state, which is determined from the operator entered by the user.  If a '=' operator was entered, the result is written to the console and the state machine exits.  Otherwise the machine transitions to the print state and writes the result to the console.  The print state then transitions to the first state of the main cycle, which continues to repeat until the user enters a '=' to exit.
+This state uses the console input element to prompt the user to enter one of the supported math operators.  The state machine does this by moving through a series of “else-if” states.  Each state uses one of the math operator grammar elements to check the same console input for a match to one of the supported math operations.  A match occurs when a grammar successfully unmarshals the input value.  Upon matching an operator the machine transitions to the print state and executes an actions element applying that operator to the result and unmarshaled number, then assigns it to the result.  As the print state transitions to the first state of the main cycle, an actions element is executed that writes the result to the console.  The cycle then continues to repeat until the user enters a '=' to exit.  Otherwise, if a '=' operator was matched, the result is written to the console as the state machine transitions to the done state.  If the input matched nothing, the state machine transitions to the done state.
 
 \begin{table}[h]
 \begin{center}
@@ -134,10 +134,10 @@ A grammar element was created to find NITF 2.1 files in data received over UDP/I
 \end{figure}
 
 \indent
-The file transfer client can be represented as a state machine with three states, as shown in figure~\ref{fig:NitfFileClientUmlStateMachine}.  The first state sends the “send” message via the UDP/IP output element to the file server.  After sending this request message, the machine transitions to the second state.
+The file transfer client can be represented as a state machine with three states, as shown in figure~\ref{fig:NitfFileClientUmlStateMachine}.  While transitioning from the first state to the second, the “send” message is sent via the UDP/IP output element to the file server.
 
 \indent
-The second state looks at data received from the file server over the UDP/IP input element to determine if it contains a NITF 2.1 file or the "“done”" message.  If the incoming data contains a file, the state machine writes it to the file output element, which prompts the user for a path to write the file to.  The state machine then transitions back to the first state which tells the server to send the next file.  If the incoming data does not contain a file, an "“else-if”" case in this same state checks for the “done” message.  If the done message was received, the machine writes a message to the console output telling the user that all files have been received, after which the machine transitions to the quit state and exits.
+The second state looks at data received from the file server over the UDP/IP input element to determine if it contains a NITF 2.1 file or the "“done”" message.  If the incoming data contains a NITF file, the state machine writes it to the file output element while transitioning to the back to the first state which tells the server to send the next file, which prompts the user for a path to write the file to.  The state machine then transitions back to the first state which tells the server to send the next file.  If the incoming data does not contain a file, an "“else-if”" case in this same state checks for the “done” message.  If the done message was received, the machine writes a message to the console output telling the user that all files have been received, after which the machine transitions to the quit state and exits.
 
 \indent
 In a hypothetical case, assume there are five NITF 2.1 files to be sent to a test case file client.  Each file has a specific file size, as shown in table~\ref{sampleNitfSizeServerData}.
@@ -223,7 +223,50 @@ The manual C++ implementation of both test cases was verified by following the  
 The TEBNF grammar for each test case was significantly shorter than its manual C++ counterpart.  The manual C++ implementations had fewer lines of code than their counterparts generated from TEBNF.  These results were expected because the TEBNF code generation tool does not yet perform optimization.
 
 \indent
-Writing C++ code to handle I/O and input verification was tedious and inconvenient when compared to TEBNF, which only requires a declaration to setup any kind of I/O method.  Though this inconvenience was observed while writing the calculator test case in C++, it was far more noticeable while writing the client.  The client uses three different I/O methods whereas the calculator only uses one.  It is evident that a more complicated application can be more convenient to write in TEBNF than C++.
+Writing code to handle I/O and input verification took longer in C++ than TEBNF, which only requires a declaration to setup any of the supported I/O methods.  Though this inconvenience was observed while writing the calculator test case in C++, it was far more noticeable while writing the client.  The client uses three different I/O methods whereas the calculator only uses one.  It is evident that a more complicated application can be more convenient to write in TEBNF than C++.  The time it took to implement both test cases in C++ and TEBNF are listed in tables~\ref{calcImplementationTimes} and~\ref{testCaseNitfRecvTimes}.
+
+\begin{table}[h]
+\begin{center}
+\caption[Calculator Test Case Implementation Times]{Calculator Test Case Implementation Times (measured in hours).}
+\label{calcImplementationTimes}
+\begin{tabular}{|c|c|c|} \hline
+\textbf{Item to Implement} & \textbf{C++} & \textbf{TEBNF} \\ \hline \hline
+Console I/O                & 1            & 0.1            \\ \hline
+State Machine              & 1            & 0.5            \\ \hline
+\textbf{Total}             & \textbf{2}   & \textbf{0.6}   \\ \hline
+\end{tabular}
+\end{center}
+\end{table}
+
+\begin{table}[h]
+\begin{center}
+\caption[NITF File Client Test Case Implementation Times]{NITF File Client Test Case Implementation Times (measured in hours).}
+\label{testCaseNitfRecvTimes}
+\begin{tabular}{|c|c|c|} \hline
+\textbf{Item to Implement} & \textbf{C++} & \textbf{TEBNF} \\ \hline \hline
+Console I/O                & 1            & 0.1            \\ \hline
+File I/O                   & 1            & 0.1            \\ \hline
+UDP/IP I/O                 & 4            & 0.5            \\ \hline
+State Machine              & 4            & 1              \\ \hline
+\textbf{Total}             & \textbf{10}  & \textbf{1.7}   \\ \hline
+\end{tabular}
+\end{center}
+\end{table}
 
 \indent
 Another disparity in coding effort was observed while writing the NITF file parser in C++.  Creating NITF parsing code in C++ took a lot more effort than in TEBNF.  The manual implementation required calculation of an offset whenever it was necessary to jump to a specific location in the NITF file.  Calculation of this offset requires knowledge beforehand of the size and position of each field.  On top of this, fields in the NITF standard can vary in length and be of different formats, as explained in section~\ref{sections:RealWorldNitfExample}.  Compare this effort to the TEBNF implementation found in listing~\ref{ExampleUDPNitfReceiver} which made it possible to write a parser which resembles actual specification document itself.
+
+\indent
+A widely accepted metric for measuring code complexity that has been applied to many millions of lines of  DoD and commerical applications code is McCabe's Cyclomatic Complexity \cite{cardoso_01}.  This metric was derived from graph theory by McCabe to measure the number of control flow paths in a code module \cite{cardoso_01}.  McCabe's Cyclomatic Complexity per module is $ e - n + 2 $, where $e$ is the number edges in the control flow graph and $n$ is the number of nodes \cite{cardoso_01}.  An example of its use proposed by \cite{zhang_01} employs McCabe's Cyclomatic Complexity metric to effectively predict defects in code modules.
+
+\begin{figure}[ht!]
+\centering
+\includegraphics[width=0.9\textwidth]{figures/CyclomaticComplexityPerModule.png}
+\caption{Cyclomatic complexity per module for the C++ and TEBNF test cases.}
+\label{fig:CyclomaticComplexityPerModule}
+\end{figure}
+
+\indent
+The C++ Code Counter tool (cccc) \cite{cccc_01} was used to calculate the Cyclomatic Complexity per module of each test case implementation as shown in figure~\ref{fig:CyclomaticComplexityPerModule}.  A comparison of the results from figure~\ref{fig:CyclomaticComplexityPerModule} indicates that code generated by the TEBNF code generation tool has a lower complexity per module than the manual C++ implementations.  These results allude to the possibility that the test cases generated from TEBNF are less error-prone than their manually implemented C++ counterparts.
+
+

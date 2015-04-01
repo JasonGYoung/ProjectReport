@@ -13,17 +13,27 @@ Most high-level code generation tools are specialized and only generate one part
 \section{TEBNF Input Specification and Code Generation Tool}
 This report will present a new input specification based on Extended Backus-Naur Form (EBNF) called Typed-EBNF (TEBNF) (see appendix~\ref{appendix:TEBNF}), and a new prototype code generation tool that uses TEBNF as its input specification.  The tool will validate key features of TEBNF:
 \begin{itemize}
-  \item TEBNF grammars can describe input patterns that include a mixture of strings, numbers, and/or raw groupings of bytes.
-  \item TEBNF integrates grammar rules with states and actions.
-  \item TEBNF can specify different methods of receiving input and sending output.
-  \item TEBNF can declare how raw input data should be unmarshaled into well-known types of specific sizes (in bytes).
-  \item TEBNF can declare how well-known types should be marshaled back into their original format.
-  \item TEBNF provides typed and non-typed EBNF terminals.
-  \item TEBNF supports arithmetic and non-arithmetic operations inside grammar rules.
-  \item TEBNF grammars match specific pieces of a given input to well-known types of varied sizes (in bits or bytes).
-  \item TEBNF supports the use of variables.
-  \item TEBNF is Turing complete (see appendix~\ref{appendix:TEBNFTuringCompletenessProof}).
+  \item Can describe input patterns that include a mixture of strings, numbers, and/or raw groupings of bytes.
+  \item Integrates grammar rules with states and actions.
+  \item Can specify different methods of receiving input and sending output.
+  \item Can declare how raw input data should be unmarshaled into well-known types of specific sizes (in bytes).
+  \item Can declare how well-known types should be marshaled back into their original format.
+  \item Provides typed and non-typed EBNF terminals.
+  \item Supports arithmetic and non-arithmetic operations inside grammar rules.
+  \item Grammars match specific pieces of a given input to well-known types of varied sizes (in bits or bytes).
+  \item Supports the use of variables.
+  \item Is Turing complete (see appendix~\ref{appendix:TEBNFTuringCompletenessProof}).
 \end{itemize}
 
 \indent
-The prototype code generation tool will demonstrate that it can generate a console application that can (1) parse data from different kinds of inputs, (2) process data to produce specific output(s), (3) direct output(s) to a network destination (UDP/IP), file, or console-based user-interface, (4) support custom network protocol handling and interaction (UDP/IP), and (5) provide a console-based user interface for the application.
+The prototype code generation tool will demonstrate that it can generate a console application that can:
+\begin{itemize}
+  \item Parse data from different kinds of inputs
+  \item Process data to produce specific output(s)
+  \item Direct output(s) to a network destination (UDP/IP), file, or console-based user-interface
+  \item Support custom network protocol handling and interaction (UDP/IP)
+  \item Provide a console-based user interface for the application
+\end{itemize}
+
+
+
