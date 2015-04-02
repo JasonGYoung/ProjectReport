@@ -214,13 +214,13 @@ The sizes of the files received were an exact match to the file sizes listed in 
 
 \section{Comparing C++ to TEBNF}
 \label{subsections:ComparingCplusplusToTEBNF}
-Each test case was also implemented in C++.  The state machines described in chapter~\ref{chapters:Design} for both test cases served as the starting point of each implementation.  Using the same design as the generated test cases, a baseline was established for more direct comparisons.
+A non-generated C++ implementation of each test case was also written.  The state machines described in chapter~\ref{chapters:Design} for both test cases served as the starting point of each implementation.  Using the same design as the generated test cases, a baseline was established for more direct comparisons.
 
 \indent
-The manual C++ implementation of both test cases was verified by following the  procedures outlined in subsections~\ref{subsections:GeneratedCalculator} and~\ref{subsections:GeneratedFileClient}.  Each was verified to have the same behavior and output as the test cases generated from TEBNF.
+The non-generated C++ implementation of both test cases was verified by following the procedures outlined in subsections~\ref{subsections:GeneratedCalculator} and~\ref{subsections:GeneratedFileClient}.  Each was verified to have the same behavior and output as the test cases generated from TEBNF.
 
 \indent
-The TEBNF grammar for each test case was significantly shorter than its manual C++ counterpart.  The manual C++ implementations had fewer lines of code than their counterparts generated from TEBNF.  These results were expected because the TEBNF code generation tool does not yet perform optimization.
+The TEBNF grammar for each test case was significantly shorter than its manual C++ counterpart.  The non-generated C++ implementations had fewer lines of code than their counterparts generated from TEBNF.  These results were expected because the TEBNF code generation tool does not yet perform optimization.
 
 \indent
 Writing code to handle I/O and input verification took longer in C++ than TEBNF, which only requires a declaration to setup any of the supported I/O methods.  Though this inconvenience was observed while writing the calculator test case in C++, it was far more noticeable while writing the client.  The client uses three different I/O methods whereas the calculator only uses one.  It is evident that a more complicated application can be more convenient to write in TEBNF than C++.  The time it took to implement both test cases in C++ and TEBNF are listed in tables~\ref{calcImplementationTimes} and~\ref{testCaseNitfRecvTimes}.
@@ -254,19 +254,40 @@ State Machine              & 4            & 1              \\ \hline
 \end{table}
 
 \indent
-Another disparity in coding effort was observed while writing the NITF file parser in C++.  Creating NITF parsing code in C++ took a lot more effort than in TEBNF.  The manual implementation required calculation of an offset whenever it was necessary to jump to a specific location in the NITF file.  Calculation of this offset requires knowledge beforehand of the size and position of each field.  On top of this, fields in the NITF standard can vary in length and be of different formats, as explained in section~\ref{sections:RealWorldNitfExample}.  Compare this effort to the TEBNF implementation found in listing~\ref{ExampleUDPNitfReceiver} which made it possible to write a parser which resembles actual specification document itself.
+Another disparity in coding effort was observed while writing the NITF file parser in C++.  Creating NITF parsing code in C++ took a lot more effort than in TEBNF.  The non-generated implementation required calculation of an offset whenever it was necessary to jump to a specific location in the NITF file.  Calculation of this offset requires knowledge beforehand of the size and position of each field.  On top of this, fields in the NITF standard can vary in length and be of different formats, as explained in section~\ref{sections:RealWorldNitfExample}.  Compare this effort to the TEBNF implementation found in listing~\ref{ExampleUDPNitfReceiver} which made it possible to write a parser resembling the actual specification document itself.
 
 \indent
-A widely accepted metric for measuring code complexity that has been applied to many millions of lines of  DoD and commerical applications code is McCabe's Cyclomatic Complexity \cite{cardoso_01}.  This metric was derived from graph theory by McCabe to measure the number of control flow paths in a code module \cite{cardoso_01}.  McCabe's Cyclomatic Complexity per module is $ e - n + 2 $, where $e$ is the number edges in the control flow graph and $n$ is the number of nodes \cite{cardoso_01}.  An example of its use proposed by \cite{zhang_01} employs McCabe's Cyclomatic Complexity metric to effectively predict defects in code modules.
-
-\begin{figure}[ht!]
-\centering
-\includegraphics[width=0.9\textwidth]{figures/CyclomaticComplexityPerModule.png}
-\caption{Cyclomatic complexity per module for the C++ and TEBNF test cases.}
-\label{fig:CyclomaticComplexityPerModule}
-\end{figure}
+A widely accepted metric for measuring code complexity that has been applied to many millions of lines of  DoD and commerical applications code is McCabe's Cyclomatic Complexity \cite{cardoso_01}.  This metric was derived from graph theory by McCabe to measure the number of control flow paths in a code module \cite{cardoso_01}.  McCabe's Cyclomatic Complexity is $ e - n + 2 $, where $e$ is the number edges in the control flow graph and $n$ is the number of nodes \cite{cardoso_01}.  An example of its use proposed by \cite{zhang_01} employs McCabe's Cyclomatic Complexity metric to effectively predict defects in code modules.
 
 \indent
-The C++ Code Counter tool (cccc) \cite{cccc_01} was used to calculate the Cyclomatic Complexity per module of each test case implementation as shown in figure~\ref{fig:CyclomaticComplexityPerModule}.  A comparison of the results from figure~\ref{fig:CyclomaticComplexityPerModule} indicates that code generated by the TEBNF code generation tool has a lower complexity per module than the manual C++ implementations.  These results allude to the possibility that the test cases generated from TEBNF are less error-prone than their manually implemented C++ counterparts.
+The Lizard code complexity analyzer \cite{lizard_01} tool was used to analyze each test case.  The analysis results from the tool contained several valuable metrics, including the average cyclomatic complexity number (CCN) \cite{lizard_01} of every function contained in each test case implementation.  The analysis results of each test case are provided in table~\ref{LizardAnalysis}.
+
+\begin{table}[h]
+\begin{center}
+\caption{Analysis results for each test case.}
+\label{LizardAnalysis}
+\begin{tabular}{|l|c|c|c|} \hline
+\textbf{Test Case} & \textbf{Avg. CCN} & \textbf{Avg. Token Count} & \textbf{Func. Count} \\ \hline \hline
+Calculator (Generated) & 1.89 & 49.50 & 135 \\ \hline
+Calculator (Non-generated) & 3.50 & 65.75 & 4 \\ \hline
+NITF file client (Generated) & 2.00 & 54.49 & 136  \\ \hline
+NITF file client (Non-generated) & 2.22 & 65.69 & 93 \\ \hline
+\end{tabular}
+\end{center}
+\end{table}
+
+\indent
+The data in table~\ref{LizardAnalysis} shows a stark contrast between the generated and non-generated test cases.  The test cases generated from TEBNF have (1) more files and functions, (2) a lower average number of tokens per function, and (3) a lower average CCN per function than the non-generated C++ implementations.
+
+\indent
+The large difference in the number of files and functions between implementations is due to the fact that code generated from TEBNF splits up larger computational problems into smaller tasks than the non-generated implementations.  This dividing of tasks yields more functions per file, leading to a need to combine logical groupings of functions into classes.  More classes naturally leads to the creation of more files to contain those classes.
+
+\indent
+Furthermore, the generated code has a lower average token count per function than the non-generated code.  This supports the reasoning that the generated code is splitting larger computational problems into smaller tasks.
+
+\indent
+In the end, the lower average CCN for generated code is the strongest indicator that larger computational problems are being broken down into smaller ones.  Together, these results all allude to the code generated from TEBNF being less error-prone than the code in non-generated implementations.
+
+
 
 
