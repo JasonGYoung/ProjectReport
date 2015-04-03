@@ -213,10 +213,10 @@ The NITF 2.1 file client test case executable was run using the five sample NITF
 The sizes of the files received were an exact match to the file sizes listed in table~\ref{sampleNitfSizeServerData}, as the output of the server and client test case executables show in figures~\ref{fig:TestCaseRunNitfServer} and~\ref{fig:TestCaseRunNitfReceiver}, respectively.  This verifies that the behavior of the NITF 2.1 client test case matches the behavior defined in the TEBNF grammar it was generated from.
 
 \section{Comparing C++ to TEBNF}
-\label{subsections:ComparingCplusplusToTEBNF}
+\label{sections:ComparingCplusplusToTEBNF}
 A non-generated C++ implementation of each test case was also written.  The state machines described in chapter~\ref{chapters:Design} for both test cases served as the starting point of each implementation.  Using the same design as the generated test cases, a baseline was established for more direct comparisons.
 
-\indent
+\subsection{Test Case Experience}
 The non-generated C++ implementation of both test cases was verified by following the procedures outlined in subsections~\ref{subsections:GeneratedCalculator} and~\ref{subsections:GeneratedFileClient}.  Each was verified to have the same behavior and output as the test cases generated from TEBNF.
 
 \indent
@@ -256,7 +256,7 @@ State Machine              & 4            & 1              \\ \hline
 \indent
 Another disparity in coding effort was observed while writing the NITF file parser in C++.  Creating NITF parsing code in C++ took a lot more effort than in TEBNF.  The non-generated implementation required calculation of an offset whenever it was necessary to jump to a specific location in the NITF file.  Calculation of this offset requires knowledge beforehand of the size and position of each field.  On top of this, fields in the NITF standard can vary in length and be of different formats, as explained in section~\ref{sections:RealWorldNitfExample}.  Compare this effort to the TEBNF implementation found in listing~\ref{ExampleUDPNitfReceiver} which made it possible to write a parser resembling the actual specification document itself.
 
-\indent
+\subsection{Test Case Analysis}
 A widely accepted metric for measuring code complexity that has been applied to many millions of lines of  DoD and commerical applications code is McCabe's Cyclomatic Complexity \cite{cardoso_01}.  This metric was derived from graph theory by McCabe to measure the number of control flow paths in a code module \cite{cardoso_01}.  McCabe's Cyclomatic Complexity is $ e - n + 2 $, where $e$ is the number edges in the control flow graph and $n$ is the number of nodes \cite{cardoso_01}.  An example of its use proposed by \cite{zhang_01} employs McCabe's Cyclomatic Complexity metric to effectively predict defects in code modules.
 
 \indent
@@ -269,9 +269,9 @@ The Lizard code complexity analyzer \cite{lizard_01} tool was used to analyze ea
 \begin{tabular}{|l|c|c|c|} \hline
 \textbf{Test Case} & \textbf{Avg. CCN} & \textbf{Avg. Token Count} & \textbf{Func. Count} \\ \hline \hline
 Calculator (Generated) & 1.89 & 49.50 & 135 \\ \hline
-Calculator (Non-generated) & 3.50 & 65.75 & 4 \\ \hline
+Calculator (Non-generated) & 3.50 & 74.25 & 4 \\ \hline
 NITF file client (Generated) & 2.00 & 54.49 & 136  \\ \hline
-NITF file client (Non-generated) & 2.22 & 65.69 & 93 \\ \hline
+NITF file client (Non-generated) & 2.97 & 79.82 & 34 \\ \hline
 \end{tabular}
 \end{center}
 \end{table}
@@ -283,10 +283,35 @@ The data in table~\ref{LizardAnalysis} shows a stark contrast between the genera
 The large difference in the number of files and functions between implementations is due to the fact that code generated from TEBNF splits up larger computational problems into smaller tasks than the non-generated implementations.  This dividing of tasks yields more functions per file, leading to a need to combine logical groupings of functions into classes.  More classes naturally leads to the creation of more files to contain those classes.
 
 \indent
-Furthermore, the generated code has a lower average token count per function than the non-generated code.  This supports the reasoning that the generated code is splitting larger computational problems into smaller tasks.
+Figure~\ref{fig:Lizard_FunctionCount} shows a box plot of the number of functions per file for each test case.  The generated test cases both have the same outlier file with $49$ functions.  This happens because the TEBNF code generator tool usually generates a file containing $49$ utility functions used for marshaling and unmarshaling of data.  The remaining data in figure~\ref{fig:Lizard_FunctionCount} shows that three of the four test cases have a similar number of functions per file.  The exception is the non-generated calculator test case, which does not have very many functions in it.
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=0.9\textwidth]{figures/Lizard_FunctionCount.png}
+\caption[Box plot of the function count per file of each generated and non-generated test case.]{Box plot of the function count per file of each generated (gen) and non-generated (non) test case.}
+\label{fig:Lizard_FunctionCount}
+\end{figure}
 
 \indent
-In the end, the lower average CCN for generated code is the strongest indicator that larger computational problems are being broken down into smaller ones.  Together, these results all allude to the code generated from TEBNF being less error-prone than the code in non-generated implementations.
+Table~\ref{LizardAnalysis} shows that the generated code has a lower average token count per function than the non-generated code.  Figure~\ref{fig:Lizard_FunctionCount} is a box plot of the average token count per function per file of each test case.  The plot further supports the understanding that the generated code averages a lower number of tokens per function.  Both file client test cases and the generated calculator test case have outliers caused by the number of tokens found in their main loops.  The non-generated file client test case shows the median average number of tokens is somewhat close to the higher end of the interquartile range (IQR) of the generated test case.  The median of the non-generated calculator sits well above the high end of the IQR of the generated calculator.  This supports the reasoning that the generated code is splitting larger computational problems into smaller tasks.
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=0.9\textwidth]{figures/Lizard_TokenCount.png}
+\caption[Box plot of the average token count per function per file for each generated and non-generated test case.]{Box plot of the average token count per function per file for each generated (gen) and non-generated (non) test case.}
+\label{fig:Lizard_TokenCount}
+\end{figure}
+
+\indent
+In the end, the lower average CCN for generated code (table~\ref{LizardAnalysis}) is the strongest indicator that larger computational problems are being broken down into smaller ones.  Figure~\ref{fig:Lizard_CCN} shows that the median CCN for the generated test cases are at or below the lowest values measured for the non-generated test cases.
+Together, the analysis results all allude to code generated from TEBNF being less error-prone than the code in non-generated implementations.
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=0.9\textwidth]{figures/Lizard_CCN.png}
+\caption[[Box plot of the cyclomatic complexity per function per file for each generated and non-generated test case.]{Box plot of the cyclomatic complexity per function per file for each generated (gen) and non-generated (non) test case.}
+\label{fig:Lizard_CCN}
+\end{figure}
 
 
 
