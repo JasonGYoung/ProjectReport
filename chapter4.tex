@@ -302,7 +302,10 @@ Calculator  & 0.017212 & 0.043956 \\ \hline
 \end{table}
 
 \indent
-Analysis data for the generated and non-generated test cases look similar but are provably different.  Table~\ref{LizardAnalysisPvalues} shows the p-values calculated for the test cases.  All of the p-values are significant at p $<$ 0.05, supporting the hypothesis that the data sets are different.
+Tables~\ref{LizardAnalysisFileClient} and \ref{LizardAnalysisCalculator} illustrate the similarity in CCN values measured by the analysis tool for generated and non-generated code.  According to \cite{linuxJournal_01}, CCN values $\leq$ 10 fit inside the low risk category.  Given that (1) the non-generated test cases were built specifically to mimic the behavior of the generated test cases, (2) the average CCN values for all of the test cases fall into the low risk category, and (3) are close to one another in value, it can be concluded that the non-generated test cases are comparable to their generated counterparts.
+
+\indent
+Analysis data for the generated and non-generated test cases also show that they are provably different despite their similarities.  Table~\ref{LizardAnalysisPvalues} contains the p-values calculated from the data sets of each test case.  All of the p-values are significant at p $<$ 0.05, supporting the conclusion that the data sets (the test cases) are different from one another.
 
 \begin{figure}[h!]
 \centering
@@ -322,13 +325,10 @@ Analysis data for the generated and non-generated test cases look similar but ar
 %The difference in the number of functions between implementations is due to the fact %that code generated from TEBNF splits up larger computational problems into smaller %tasks than the non-generated implementations.  This dividing of tasks yields more %functions, leading to a need to combine logical groupings of functions into classes.
 
 \indent
-Tables~\ref{LizardAnalysisFileClient} and \ref{LizardAnalysisCalculator} show that the generated code has a lower average token count per function than the non-generated code.  Figures~\ref{fig:Lizard_FileClient_TokenCount} and \ref{fig:Lizard_Calculator_TokenCount} graphically support the assumption that the generated code averages a lower number of tokens per function.  The first conclusion to be drawn from the data as plotted in these figures is that larger computational problems are being split into smaller tasks.  This conclusion can be drawn based on the fact that lower median values within smaller data spreads point to a greater number of functions with lower token counts. 
+Tables~\ref{LizardAnalysisFileClient} and \ref{LizardAnalysisCalculator} show that the generated code has a lower average token count per function than the non-generated code.  Figures~\ref{fig:Lizard_FileClient_TokenCount} and \ref{fig:Lizard_Calculator_TokenCount} graphically support the assumption that the generated code averages a lower number of tokens per function.  The first conclusion to be drawn from the data as plotted in these figures is that the generated code is splitting larger computational problems into smaller tasks.  This conclusion can be drawn based on the fact that lower median values within smaller data spreads point to a greater number of functions with lower token counts.
 
 \indent
-In the end, the lower average CCN for generated code (tables~\ref{LizardAnalysisFileClient} and \ref{LizardAnalysisCalculator}) is the strongest indicator that larger computational problems are being broken down into smaller ones.  Figures~\ref{fig:Lizard_FileClient_CCN} and \ref{fig:Lizard_Calculator_CCN} show that the median CCN for the generated test cases are at or below the lowest values measured for the non-generated test cases.
-
-\indent
-The main conclusion to be drawn is that lower token counts and CCN values in code generated from TEBNF both point to a trend in the data showing it is less error-prone than the non-generated code.  This conclusion is supported by fact that \cite{zhang_01} was able to use CCN values to detect the presence of defects in code.
+The lower average CCN for generated code (tables~\ref{LizardAnalysisFileClient} and \ref{LizardAnalysisCalculator}) is the strongest indicator that larger computational problems are being broken down into smaller ones.  Figures~\ref{fig:Lizard_FileClient_CCN} and \ref{fig:Lizard_Calculator_CCN} show that the median CCN for the generated test cases are at or below the lowest values measured for the non-generated test cases.  Given that \cite{zhang_01} was able to use CCN values to detect the presence of defects in code, and that the generated code has shorter interquartile ranges paired with medians at or below the lowest quartiles of the non-generated code, it can be concluded that a greater number of functions in the code generated from TEBNF have a lower number of defects than the non-generated code.  This correlation of fewer defects per function in generated code means it is likely that as applications increase in size and scope, the number of defects will remain lower than application code not generated from TEBNF.
 
 \begin{figure}[h!]
 \centering
