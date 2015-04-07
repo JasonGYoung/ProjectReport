@@ -257,61 +257,94 @@ State Machine              & 4            & 1              \\ \hline
 Another disparity in coding effort was observed while writing the NITF file parser in C++.  Creating NITF parsing code in C++ took a lot more effort than in TEBNF.  The non-generated implementation required calculation of an offset whenever it was necessary to jump to a specific location in the NITF file.  Calculation of this offset requires knowledge beforehand of the size and position of each field.  On top of this, fields in the NITF standard can vary in length and be of different formats, as explained in section~\ref{sections:RealWorldNitfExample}.  Compare this effort to the TEBNF implementation found in listing~\ref{ExampleUDPNitfReceiver} which made it possible to write a parser resembling the actual specification document itself.
 
 \subsection{Test Case Analysis}
-A widely accepted metric for measuring code complexity that has been applied to many millions of lines of  DoD and commerical applications code is McCabe's Cyclomatic Complexity \cite{cardoso_01}.  This metric was derived from graph theory by McCabe to measure the number of control flow paths in a code module \cite{cardoso_01}.  McCabe's Cyclomatic Complexity is $ e - n + 2 $, where $e$ is the number edges in the control flow graph and $n$ is the number of nodes \cite{cardoso_01}.  An example of its use proposed by \cite{zhang_01} employs McCabe's Cyclomatic Complexity metric to effectively predict defects in code modules.
+A widely accepted metric for measuring code complexity is McCabe's Cyclomatic Complexity \cite{cardoso_01}.  This metric was derived from graph theory by McCabe to measure the number of control flow paths in a code module \cite{cardoso_01}.  McCabe's Cyclomatic Complexity is $ e - n + 2 $, where $e$ is the number edges in the control flow graph and $n$ is the number of nodes \cite{cardoso_01}.  An example of its use proposed by \cite{zhang_01} employs McCabe's Cyclomatic Complexity metric to effectively predict defects in code modules.
 
 \indent
-The Lizard code complexity analyzer \cite{lizard_01} tool was used to analyze each test case.  The analysis results from the tool contained several valuable metrics, including the average cyclomatic complexity number (CCN) \cite{lizard_01} of every function contained in each test case implementation.  The analysis results of each test case are provided in table~\ref{LizardAnalysis}.
+The Lizard code complexity analyzer \cite{lizard_01} tool was used to analyze each test case.  The analysis results from the tool contained several valuable metrics, including the average cyclomatic complexity number (CCN) \cite{lizard_01} of every function in the test cases.  The analysis results of each test case are provided in tables~\ref{LizardAnalysisFileClient} and \ref{LizardAnalysisCalculator}.  Values related to the interquartile range (IQR) were calculated from the analysis data of each test case, including the lower (first) quartile (Q1) corresponding to the $25^{th}$ percentile, the higher quartile (Q3) corresponding to the $75^{th}$ percentile, and the median.  In order to focus on the most relevant analysis data, the upper limit ($U_{CCN}$) and lower limit ($L_{CCN}$) of each data set was calculated as $Q3 + 1.5(IQR)$ and $Q1 - 1.5(IQR)$, respectively.
 
 \begin{table}[h]
 \begin{center}
-\caption{Analysis results for each test case.}
-\label{LizardAnalysis}
-\begin{tabular}{|l|c|c|c|} \hline
-\textbf{Test Case} & \textbf{Avg. CCN} & \textbf{Avg. Token Count} & \textbf{Func. Count} \\ \hline \hline
-Calculator (Generated) & 1.89 & 49.50 & 135 \\ \hline
-Calculator (Non-generated) & 3.50 & 74.25 & 4 \\ \hline
-NITF file client (Generated) & 2.00 & 54.49 & 136  \\ \hline
-NITF file client (Non-generated) & 2.97 & 79.82 & 34 \\ \hline
+\caption{Analysis results for the NITF file client test cases.}
+\label{LizardAnalysisFileClient}
+\begin{tabular}{|l|c|c|c|c|} \hline
+\textbf{Test Case} & \textbf{Avg. CCN} & $\mathbf{U_{CCN}}$ & \textbf{Avg. Token Count} & \textbf{Func. Count} \\ \hline \hline
+Generated     & 2.00 & 3 & 54.49  & 136 \\ \hline
+Non-generated & 3.38 & 6 & 101.81 & 16  \\ \hline
+\end{tabular}
+\end{center}
+\end{table}
+
+\begin{table}[h]
+\begin{center}
+\caption{Analysis results for the calculator test cases.}
+\label{LizardAnalysisCalculator}
+\begin{tabular}{|l|c|c|c|c|} \hline
+\textbf{Test Case} & \textbf{Avg. CCN} & $\mathbf{U_{CCN}}$ & \textbf{Avg. Token Count} & \textbf{Func. Count} \\ \hline \hline
+Generated     & 1.89 & 3 & 49.50 & 135 \\ \hline
+Non-generated & 3.42 & 7 & 81.42 & 12  \\ \hline
 \end{tabular}
 \end{center}
 \end{table}
 
 \indent
-The data in table~\ref{LizardAnalysis} shows a stark contrast between the generated and non-generated test cases.  The test cases generated from TEBNF have (1) more files and functions, (2) a lower average number of tokens per function, and (3) a lower average CCN per function than the non-generated C++ implementations.
+The data in tables~\ref{LizardAnalysisFileClient} and \ref{LizardAnalysisCalculator} show differences between the generated and non-generated test cases.  Compared to the non-generated C++ implementations, the test cases generated from TEBNF have (1) more functions, (2) a lower average number of tokens per function, and (3) a lower average CCN per function.
+
+\begin{table}[h]
+\begin{center}
+\caption{P-values calculated from the analysis data of each test case.}
+\label{LizardAnalysisPvalues}
+\begin{tabular}{|l|c|c|} \hline
+\textbf{Test Case} & $\mathbf{P_{CCN}}$ & $\mathbf{P_{TokenCount}}$ \\ \hline \hline
+File Client & 0.041236 & 0.007916 \\ \hline
+Calculator  & 0.017212 & 0.043956 \\ \hline
+\end{tabular}
+\end{center}
+\end{table}
 
 \indent
-The large difference in the number of files and functions between implementations is due to the fact that code generated from TEBNF splits up larger computational problems into smaller tasks than the non-generated implementations.  This dividing of tasks yields more functions per file, leading to a need to combine logical groupings of functions into classes.  More classes naturally leads to the creation of more files to contain those classes.
-
-\indent
-Figure~\ref{fig:Lizard_FunctionCount} shows a box plot of the number of functions per file for each test case.  The generated test cases both have the same outlier file with $49$ functions.  This happens because the TEBNF code generator tool usually generates a file containing $49$ utility functions used for marshaling and unmarshaling of data.  The remaining data in figure~\ref{fig:Lizard_FunctionCount} shows that three of the four test cases have a similar number of functions per file.  The exception is the non-generated calculator test case, which does not have very many functions in it.
+Analysis data for the generated and non-generated test cases look similar but are provably different.  Table~\ref{LizardAnalysisPvalues} shows the p-values calculated for the test cases.  All of the p-values are significant at p $<$ 0.05, supporting the hypothesis that the data sets are different.
 
 \begin{figure}[h!]
 \centering
-\includegraphics[width=0.9\textwidth]{figures/Lizard_FunctionCount.png}
-\caption[Box plot of the function count per file of each generated and non-generated test case.]{Box plot of the function count per file of each generated (gen) and non-generated (non) test case.}
-\label{fig:Lizard_FunctionCount}
+\includegraphics[width=0.9\textwidth]{figures/Lizard_FileClient_TokenCount.png}
+\caption[Box plot of function token count for the file client test cases.]{Box plot of function token count for the file client test cases (omits outliers).}
+\label{fig:Lizard_FileClient_TokenCount}
 \end{figure}
-
-\indent
-Table~\ref{LizardAnalysis} shows that the generated code has a lower average token count per function than the non-generated code.  Figure~\ref{fig:Lizard_FunctionCount} is a box plot of the average token count per function per file of each test case.  The plot further supports the understanding that the generated code averages a lower number of tokens per function.  Both file client test cases and the generated calculator test case have outliers caused by the number of tokens found in their main loops.  The non-generated file client test case shows the median average number of tokens is somewhat close to the higher end of the interquartile range (IQR) of the generated test case.  The median of the non-generated calculator sits well above the high end of the IQR of the generated calculator.  This supports the reasoning that the generated code is splitting larger computational problems into smaller tasks.
 
 \begin{figure}[h!]
 \centering
-\includegraphics[width=0.9\textwidth]{figures/Lizard_TokenCount.png}
-\caption[Box plot of the average token count per function per file for each generated and non-generated test case.]{Box plot of the average token count per function per file for each generated (gen) and non-generated (non) test case.}
-\label{fig:Lizard_TokenCount}
+\includegraphics[width=0.9\textwidth]{figures/Lizard_Calculator_TokenCount.png}
+\caption[Box plot of function token count for the calculator test cases.]{Box plot of function token count for the calculator test cases (omits outliers).}
+\label{fig:Lizard_Calculator_TokenCount}
 \end{figure}
 
+%\indent
+%The difference in the number of functions between implementations is due to the fact %that code generated from TEBNF splits up larger computational problems into smaller %tasks than the non-generated implementations.  This dividing of tasks yields more %functions, leading to a need to combine logical groupings of functions into classes.
+
 \indent
-In the end, the lower average CCN for generated code (table~\ref{LizardAnalysis}) is the strongest indicator that larger computational problems are being broken down into smaller ones.  Figure~\ref{fig:Lizard_CCN} shows that the median CCN for the generated test cases are at or below the lowest values measured for the non-generated test cases.
-Together, the analysis results all allude to code generated from TEBNF being less error-prone than the code in non-generated implementations.
+Tables~\ref{LizardAnalysisFileClient} and \ref{LizardAnalysisCalculator} show that the generated code has a lower average token count per function than the non-generated code.  Figures~\ref{fig:Lizard_FileClient_TokenCount} and \ref{fig:Lizard_Calculator_TokenCount} graphically support the assumption that the generated code averages a lower number of tokens per function.  The first conclusion to be drawn from the data as plotted in these figures is that larger computational problems are being split into smaller tasks.  This conclusion can be drawn based on the fact that lower median values within smaller data spreads point to a greater number of functions with lower token counts. 
+
+\indent
+In the end, the lower average CCN for generated code (tables~\ref{LizardAnalysisFileClient} and \ref{LizardAnalysisCalculator}) is the strongest indicator that larger computational problems are being broken down into smaller ones.  Figures~\ref{fig:Lizard_FileClient_CCN} and \ref{fig:Lizard_Calculator_CCN} show that the median CCN for the generated test cases are at or below the lowest values measured for the non-generated test cases.
+
+\indent
+The main conclusion to be drawn is that lower token counts and CCN values in code generated from TEBNF both point to a trend in the data showing it is less error-prone than the non-generated code.  This conclusion is supported by fact that \cite{zhang_01} was able to use CCN values to detect the presence of defects in code.
 
 \begin{figure}[h!]
 \centering
-\includegraphics[width=0.9\textwidth]{figures/Lizard_CCN.png}
-\caption[[Box plot of the cyclomatic complexity per function per file for each generated and non-generated test case.]{Box plot of the cyclomatic complexity per function per file for each generated (gen) and non-generated (non) test case.}
-\label{fig:Lizard_CCN}
+\includegraphics[width=0.9\textwidth]{figures/Lizard_FileClient_CCN.png}
+\caption{Box plot of function cyclomatic complexity (CCN) for the file client test cases.}
+\label{fig:Lizard_FileClient_CCN}
 \end{figure}
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=0.9\textwidth]{figures/Lizard_Calculator_CCN.png}
+\caption{Box plot of function cyclomatic complexity (CCN) for the calculator test cases.}
+\label{fig:Lizard_Calculator_CCN}
+\end{figure}
+
+
 
 
 
