@@ -310,22 +310,19 @@ Analysis data for the generated and non-generated test cases also show that they
 \begin{figure}[h!]
 \centering
 \includegraphics[width=0.9\textwidth]{figures/Lizard_FileClient_TokenCount.png}
-\caption[Box plot of function token count for the file client test cases.]{Box plot of function token count for the file client test cases (omits outliers).}
+\caption[Function token count for the file client test cases.]{Function token count for the file client test cases (omits outliers).}
 \label{fig:Lizard_FileClient_TokenCount}
 \end{figure}
 
 \begin{figure}[h!]
 \centering
 \includegraphics[width=0.9\textwidth]{figures/Lizard_Calculator_TokenCount.png}
-\caption[Box plot of function token count for the calculator test cases.]{Box plot of function token count for the calculator test cases (omits outliers).}
+\caption[Function token count for the calculator test cases.]{Function token count for the calculator test cases (omits outliers).}
 \label{fig:Lizard_Calculator_TokenCount}
 \end{figure}
 
-%\indent
-%The difference in the number of functions between implementations is due to the fact %that code generated from TEBNF splits up larger computational problems into smaller %tasks than the non-generated implementations.  This dividing of tasks yields more %functions, leading to a need to combine logical groupings of functions into classes.
-
 \indent
-Tables~\ref{LizardAnalysisFileClient} and \ref{LizardAnalysisCalculator} show that the generated code has a lower average token count per function than the non-generated code.  Figures~\ref{fig:Lizard_FileClient_TokenCount} and \ref{fig:Lizard_Calculator_TokenCount} graphically support the assumption that the generated code averages a lower number of tokens per function.  The first conclusion to be drawn from the data as plotted in these figures is that the generated code is splitting larger computational problems into smaller tasks.  This conclusion can be drawn based on the fact that lower median values within smaller data spreads point to a greater number of functions with lower token counts.
+Tables~\ref{LizardAnalysisFileClient} and \ref{LizardAnalysisCalculator} show that the generated code has a lower average token count per function than the non-generated code (figures~\ref{fig:Lizard_FileClient_TokenCount} and \ref{fig:Lizard_Calculator_TokenCount}).  The first conclusion to be drawn from the data as plotted in these figures is that the generated code is splitting larger computational problems into smaller tasks.  This conclusion can be drawn based on the fact that lower median values within smaller data spreads point to a greater number of functions with lower token counts.
 
 \indent
 The lower average CCN for generated code (tables~\ref{LizardAnalysisFileClient} and \ref{LizardAnalysisCalculator}) is the strongest indicator that larger computational problems are being broken down into smaller ones.  Figures~\ref{fig:Lizard_FileClient_CCN} and \ref{fig:Lizard_Calculator_CCN} show that the median CCN for the generated test cases are at or below the lowest values measured for the non-generated test cases.  Given that \cite{zhang_01} was able to use CCN values to detect the presence of defects in code, and that the generated code has shorter interquartile ranges paired with medians at or below the lowest quartiles of the non-generated code, it can be concluded that a greater number of functions in the code generated from TEBNF have a lower number of defects than the non-generated code.  This correlation of fewer defects per function in generated code means it is likely that as applications increase in size and scope, the number of defects will remain lower than application code not generated from TEBNF.
@@ -333,14 +330,14 @@ The lower average CCN for generated code (tables~\ref{LizardAnalysisFileClient} 
 \begin{figure}[h!]
 \centering
 \includegraphics[width=0.9\textwidth]{figures/Lizard_FileClient_CCN.png}
-\caption[Box plot of function CCN for the file client test cases.]{Box plot of function CCN for the file client test cases (omits outliers).}
+\caption[Function CCN for the file client test cases.]{Function CCN for the file client test cases (omits outliers).}
 \label{fig:Lizard_FileClient_CCN}
 \end{figure}
 
 \begin{figure}[h!]
 \centering
 \includegraphics[width=0.9\textwidth]{figures/Lizard_Calculator_CCN.png}
-\caption[Box plot of function CCN for the calculator test cases.]{Box plot of function CCN for the calculator test cases (omits outliers).}
+\caption[Function CCN for the calculator test cases.]{Function CCN for the calculator test cases (omits outliers).}
 \label{fig:Lizard_Calculator_CCN}
 \end{figure}
 
