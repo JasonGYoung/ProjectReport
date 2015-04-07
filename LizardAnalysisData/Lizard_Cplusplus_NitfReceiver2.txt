@@ -1,0 +1,78 @@
+========================================
+  NLOC    CCN   token  PARAM  location  
+----------------------------------------
+      11      1     43      0 Nitf::Nitf@14-24@C:/src/HandWrittenNitfReceiver/Nitf.cpp
+      12      1    141      1 Nitf::marshal_syncWord@26-37@C:/src/HandWrittenNitfReceiver/Nitf.cpp
+      21     18    362      1 Nitf::unmarshal_syncWord@39-59@C:/src/HandWrittenNitfReceiver/Nitf.cpp
+       4      1     26      1 Nitf::marshal_skip1@61-64@C:/src/HandWrittenNitfReceiver/Nitf.cpp
+       5      2     30      1 Nitf::unmarshal_skip1@66-70@C:/src/HandWrittenNitfReceiver/Nitf.cpp
+       4      1     28      1 Nitf::marshal_fileLength@72-75@C:/src/HandWrittenNitfReceiver/Nitf.cpp
+       5      2     32      1 Nitf::unmarshal_fileLength@77-81@C:/src/HandWrittenNitfReceiver/Nitf.cpp
+       4      1     26      1 Nitf::marshal_skip2@83-86@C:/src/HandWrittenNitfReceiver/Nitf.cpp
+       6      2     39      1 Nitf::unmarshal_skip2@88-93@C:/src/HandWrittenNitfReceiver/Nitf.cpp
+       6      1     36      1 Nitf::marshal_header@95-100@C:/src/HandWrittenNitfReceiver/Nitf.cpp
+       7      4     52      1 Nitf::unmarshal_header@102-108@C:/src/HandWrittenNitfReceiver/Nitf.cpp
+       5      1     29      1 Nitf::marshal_file@110-114@C:/src/HandWrittenNitfReceiver/Nitf.cpp
+       6      3     39      1 Nitf::unmarshal_file@116-121@C:/src/HandWrittenNitfReceiver/Nitf.cpp
+       4      2     35      1 Nitf::marshal@123-126@C:/src/HandWrittenNitfReceiver/Nitf.cpp
+      10      2     78      1 Nitf::unmarshal@128-137@C:/src/HandWrittenNitfReceiver/Nitf.cpp
+      14      3     60      0 Nitf::actions@139-154@C:/src/HandWrittenNitfReceiver/Nitf.cpp
+       1      1      8      0 getResolvedSize@55-55@C:/src/HandWrittenNitfReceiver/Nitf.hpp
+       5      1     21      0 get@56-60@C:/src/HandWrittenNitfReceiver/Nitf.hpp
+       7      2     54      3 unmarshal@21-27@C:/src/HandWrittenNitfReceiver/NitfReceiver_Main.cpp
+      10      2     53      3 marshal@28-37@C:/src/HandWrittenNitfReceiver/NitfReceiver_Main.cpp
+       4      1     27      2 compare@38-41@C:/src/HandWrittenNitfReceiver/NitfReceiver_Main.cpp
+       4      1     26      2 compare@42-45@C:/src/HandWrittenNitfReceiver/NitfReceiver_Main.cpp
+       9      2     89      4 unmarshal@46-54@C:/src/HandWrittenNitfReceiver/NitfReceiver_Main.cpp
+       5      2     71      3 marshal@55-59@C:/src/HandWrittenNitfReceiver/NitfReceiver_Main.cpp
+      22      7    254      4 unmarshalNumString@61-82@C:/src/HandWrittenNitfReceiver/NitfReceiver_Main.cpp
+       9      4    113      4 marshalNumString@84-92@C:/src/HandWrittenNitfReceiver/NitfReceiver_Main.cpp
+      11      1     41      0 Nitf@105-115@C:/src/HandWrittenNitfReceiver/NitfReceiver_Main.cpp
+      21     18    360      1 unmarshal_syncWord@117-137@C:/src/HandWrittenNitfReceiver/NitfReceiver_Main.cpp
+      14      1    163      1 marshal_header@140-153@C:/src/HandWrittenNitfReceiver/NitfReceiver_Main.cpp
+       7      4     58      1 unmarshal_header@155-161@C:/src/HandWrittenNitfReceiver/NitfReceiver_Main.cpp
+       5      1     29      1 marshal_file@163-167@C:/src/HandWrittenNitfReceiver/NitfReceiver_Main.cpp
+       7      3     48      1 unmarshal_file@169-175@C:/src/HandWrittenNitfReceiver/NitfReceiver_Main.cpp
+       5      2     33      1 marshal@177-181@C:/src/HandWrittenNitfReceiver/NitfReceiver_Main.cpp
+       9      1     68      1 unmarshal@183-191@C:/src/HandWrittenNitfReceiver/NitfReceiver_Main.cpp
+       1      1      8      0 getResolvedSize@193-193@C:/src/HandWrittenNitfReceiver/NitfReceiver_Main.cpp
+       5      1     21      0 get@194-198@C:/src/HandWrittenNitfReceiver/NitfReceiver_Main.cpp
+      27      4    163      4 write@205-231@C:/src/HandWrittenNitfReceiver/NitfReceiver_Main.cpp
+      45      7    265      2 main@233-280@C:/src/HandWrittenNitfReceiver/NitfReceiver_Main.cpp
+      16      1     91      0 UDP_In::UDP_In@13-28@C:/src/HandWrittenNitfReceiver/UDP_In.cpp
+      23      4    180      2 UDP_In::UDP_In@30-52@C:/src/HandWrittenNitfReceiver/UDP_In.cpp
+       4      1     10      0 UDP_In@54-57@C:/src/HandWrittenNitfReceiver/UDP_In.cpp
+      23      6    218      2 UDP_In::write@59-81@C:/src/HandWrittenNitfReceiver/UDP_In.cpp
+       9      2     90      2 UDP_In::read@83-91@C:/src/HandWrittenNitfReceiver/UDP_In.cpp
+       6      2     40      0 UDP_In::read@93-98@C:/src/HandWrittenNitfReceiver/UDP_In.cpp
+      12      2     39      1 UDP_In::adjust@100-111@C:/src/HandWrittenNitfReceiver/UDP_In.cpp
+      10      3     71      0 UDP_In::getMtuSize@113-122@C:/src/HandWrittenNitfReceiver/UDP_In.cpp
+       5      2     45      0 WSASession@21-25@C:/src/HandWrittenNitfReceiver/UDP_In.hpp
+       1      1      9      0 WSASession@27-27@C:/src/HandWrittenNitfReceiver/UDP_In.hpp
+       5      1     21      0 get@46-50@C:/src/HandWrittenNitfReceiver/UDP_In.hpp
+       5      1     40      2 get@51-55@C:/src/HandWrittenNitfReceiver/UDP_In.hpp
+       5      2     45      0 WSASession@16-20@C:/src/HandWrittenNitfReceiver/WSASession.hpp
+       1      1      9      0 WSASession@22-22@C:/src/HandWrittenNitfReceiver/WSASession.hpp
+--------------------------------------------------------------
+6 file analyzed.
+==============================================================
+NLOC    Avg.NLOC AvgCCN Avg.ttoken  function_cnt    file
+--------------------------------------------------------------
+    127      7    2.0        66        16     C:/src/HandWrittenNitfReceiver/Nitf.cpp
+     40      3    1.0        14         2     C:/src/HandWrittenNitfReceiver/Nitf.hpp
+    254     11    3.0        97        20     C:/src/HandWrittenNitfReceiver/NitfReceiver_Main.cpp
+    106     12    2.0        92         8     C:/src/HandWrittenNitfReceiver/UDP_In.cpp
+     48      4    1.0        28         4     C:/src/HandWrittenNitfReceiver/UDP_In.hpp
+     13      3    1.0        27         2     C:/src/HandWrittenNitfReceiver/WSASession.hpp
+
+======================================
+!!!! Warnings (CCN > 15) !!!!
+========================================
+  NLOC    CCN   token  PARAM  location  
+----------------------------------------
+      21     18    362      1 Nitf::unmarshal_syncWord@39-59@C:/src/HandWrittenNitfReceiver/Nitf.cpp
+      21     18    360      1 unmarshal_syncWord@117-137@C:/src/HandWrittenNitfReceiver/NitfReceiver_Main.cpp
+==========================================================================================
+Total nloc  Avg.nloc  Avg CCN  Avg token  Fun Cnt  Warning cnt   Fun Rt   nloc Rt  
+------------------------------------------------------------------------------------------
+       588         9     2.71      75.71       52            2      0.04    0.09

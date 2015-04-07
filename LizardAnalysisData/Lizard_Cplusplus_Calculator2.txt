@@ -1,0 +1,24 @@
+========================================
+  NLOC    CCN   token  PARAM  location  
+----------------------------------------
+      52     11    231      2 main@6-57@C:/src/HandWrittenCalculator/HandWrittenCalculator/Main.cpp
+       7      1     23      0 promptNumber@16-22@C:/src/HandWrittenCalculator/HandWrittenCalculator/Utils.hpp
+       7      1     23      0 promptOp@24-30@C:/src/HandWrittenCalculator/HandWrittenCalculator/Utils.hpp
+       5      1     20      1 printResult@32-36@C:/src/HandWrittenCalculator/HandWrittenCalculator/Utils.hpp
+--------------------------------------------------------------
+2 file analyzed.
+==============================================================
+NLOC    Avg.NLOC AvgCCN Avg.ttoken  function_cnt    file
+--------------------------------------------------------------
+     55     52   11.0       231         1     C:/src/HandWrittenCalculator/HandWrittenCalculator/Main.cpp
+     33      6    1.0        22         3     C:/src/HandWrittenCalculator/HandWrittenCalculator/Utils.hpp
+
+======================================
+!!!! Warnings (CCN > 15) !!!!
+========================================
+  NLOC    CCN   token  PARAM  location  
+----------------------------------------
+==========================================================================================
+Total nloc  Avg.nloc  Avg CCN  Avg token  Fun Cnt  Warning cnt   Fun Rt   nloc Rt  
+------------------------------------------------------------------------------------------
+        88        17     3.50      74.25        4            0      0.00    0.00

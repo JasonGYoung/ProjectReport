@@ -1,0 +1,39 @@
+========================================
+  NLOC    CCN   token  PARAM  location  
+----------------------------------------
+      27      4    163      4 writeFile@19-45@C:\src\HandWrittenNitfReceiver\NitfReceiver_Main.cpp
+      70     21    558      2 main@47-120@C:\src\HandWrittenNitfReceiver\NitfReceiver_Main.cpp
+      16      1     91      0 UDP_In::UDP_In@13-28@C:\src\HandWrittenNitfReceiver\UDP_In.cpp
+      23      4    180      2 UDP_In::UDP_In@30-52@C:\src\HandWrittenNitfReceiver\UDP_In.cpp
+       4      1     10      0 UDP_In@54-57@C:\src\HandWrittenNitfReceiver\UDP_In.cpp
+      23      6    218      2 UDP_In::write@59-81@C:\src\HandWrittenNitfReceiver\UDP_In.cpp
+       9      2     90      2 UDP_In::read@83-91@C:\src\HandWrittenNitfReceiver\UDP_In.cpp
+       6      2     40      0 UDP_In::read@93-98@C:\src\HandWrittenNitfReceiver\UDP_In.cpp
+      12      2     39      1 UDP_In::adjust@100-111@C:\src\HandWrittenNitfReceiver\UDP_In.cpp
+      10      3     71      0 UDP_In::getMtuSize@113-122@C:\src\HandWrittenNitfReceiver\UDP_In.cpp
+       5      2     45      0 WSASession@21-25@C:\src\HandWrittenNitfReceiver\UDP_In.hpp
+       1      1      9      0 WSASession@27-27@C:\src\HandWrittenNitfReceiver\UDP_In.hpp
+       5      1     21      0 get@46-50@C:\src\HandWrittenNitfReceiver\UDP_In.hpp
+       5      1     40      2 get@51-55@C:\src\HandWrittenNitfReceiver\UDP_In.hpp
+       5      2     45      0 WSASession@16-20@C:\src\HandWrittenNitfReceiver\WSASession.hpp
+       1      1      9      0 WSASession@22-22@C:\src\HandWrittenNitfReceiver\WSASession.hpp
+--------------------------------------------------------------
+4 file analyzed.
+==============================================================
+NLOC    Avg.NLOC AvgCCN Avg.ttoken  function_cnt    file
+--------------------------------------------------------------
+    106     48   12.0       360         2     C:\src\HandWrittenNitfReceiver\NitfReceiver_Main.cpp
+    106     12    2.0        92         8     C:\src\HandWrittenNitfReceiver\UDP_In.cpp
+     48      4    1.0        28         4     C:\src\HandWrittenNitfReceiver\UDP_In.hpp
+     13      3    1.0        27         2     C:\src\HandWrittenNitfReceiver\WSASession.hpp
+
+======================================
+!!!! Warnings (CCN > 15) !!!!
+========================================
+  NLOC    CCN   token  PARAM  location  
+----------------------------------------
+      70     21    558      2 main@47-120@C:\src\HandWrittenNitfReceiver\NitfReceiver_Main.cpp
+==========================================================================================
+Total nloc  Avg.nloc  Avg CCN  Avg token  Fun Cnt  Warning cnt   Fun Rt   nloc Rt  
+------------------------------------------------------------------------------------------
+       273        13     3.38     101.81       16            1      0.06    0.32
