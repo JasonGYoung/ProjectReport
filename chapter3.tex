@@ -1,6 +1,9 @@
 \chapter{Design}
 \label{chapters:Design}
-The TEBNF language makes it possible to convert a software design into a specification that can be provided to the TEBNF code generation tool.  The TEBNF code generation tool generates C++ code from TEBNF grammars that can be built by a C++ compiler into a functioning console application.  This chapter discusses the TEBNF language, design decisions, the TEBNF code generation tool, the architecture of the tool, and the code generation process.
+The TEBNF language makes it possible to convert a software design into a specification that can be provided to the TEBNF code generation tool.  The TEBNF code generation tool generates C++ code from TEBNF grammars that can be built by a C++ compiler into a functioning console application.
+
+\indent
+As mentioned previously, TEBNF abstracts some of the complexities of creating software with the aim of reducing defects in code.  This chapter covers important design considerations and decisions that were critical to achieving the stated goals of TEBNF.  Specifically, this chapter discusses the TEBNF language, design decisions, the TEBNF code generation tool, the architecture of the tool, and the code generation process.
 
 \section{The TEBNF Language}
 The TEBNF specification is composed of language constructs called elements.  A TEBNF grammar is the combination of these elements and their contents to define an application.   The primary function of each element type is to convey a specific type of functionality.  Enforcing boundaries between different types of functionality (elements) results in greater scalability.  There are five kinds of elements in the TEBNF specification:
@@ -9,11 +12,14 @@ The TEBNF specification is composed of language constructs called elements.  A T
   \item Output methods: a method of outputting data.
   \item Grammar sections: parses input data. 
   \item Actions: action code to execute using data from other elements.
-  \item State transition tables: defines execution path.
+  \item State transition tables: defines the behavior of the program.
 \end{itemize}
 
 \indent
-Within each element are separate constructs known as subelements.  Different kinds of subelements exist for each element type, and are enumerated in detail in appendix~\ref{appendix:TEBNF}.  The glue that brings these elements together to describe an application is two-fold: 1) static variables that can be defined within grammar elements and used by other elements to get and store information, and 2) state transition table elements that use all of the other elements in a grammar to express the order of task execution.
+Subelements are language constructs that exist inside elements.  Different kinds of subelements exist for each element type, and are enumerated in detail in appendix~\ref{appendix:TEBNF}.  The glue that brings these elements together to describe an application is two-fold: 1) static variables that can be defined within grammar elements and used by other elements to get and store information, and 2) state transition table elements that use all of the other elements in a grammar to express the order of task execution.
+
+\indent
+The structure provided by elements and subelements in a TEBNF grammar are meant to help bridge the gap between design and implementation.  From the perspective of a developer, a typical application might be represented as classes in an object-oriented language like C++.  Frequently used input/output (I/O) functions in the program might be encapsulated within one or more classes that wrap frequently used I/O functionality.  Data received and sent using these I/O functions would be parsed and processed by different classes structured according to a design modeled by a state machine.  This kind of design could easily be represented in TEBNF using the appropriate I/O method elements to handle I/O, grammar elements to deal with lexical analysis and parsing of incoming and/or outgoing data, and a state transition table element to describe the state machine outlined in the design.
 
 \section{Design Decisions}
 Several important design decisions were made in order to improve function and reduce complexity in TEBNF.  This section discusses why these design decisions were made, how these decisions influenced the design of TEBNF, and how these decisions affected the code generated from it.
@@ -25,7 +31,7 @@ One of the primary goals of TEBNF is to reduce the difficulty of translating hig
 Multiple reasons and advantages exist for treating TEBNF elements and the C++ classes generated from them as singletons:
 \begin{itemize}
   \item Lazy instantiation.  Singleton C++ classes make it possible to avoid allocating memory for element class objects until they are actually used in the generated code.  This is different from static initialization that allocates memory to a variable at the time of declaration.
-  \item Thread synchronization.   Singletons can yield the best results in situations where multiple threads try to access the same resource.  This applies to code generated from a TEBNF grammar because it is possible for multiple state table threads to need access to the same subelement or static variable class members at the same time.
+  \item Thread synchronization.   Singletons can yield the best results in situations where multiple threads try to access the same resource.  Thread-safe access to the singleton object is achieved by locking a synchronization mechanism (e.g. mutex) inside it's getter function as it returns the static singleton object.  This applies to code generated from a TEBNF grammar because it is possible for multiple state table threads to need access to the same subelement or static variable class members at the same time.
   \item Instance control.  A singleton prevents other objects from instantiating their own copies of the singleton object, ensuring that all objects access the same instance.  This simplifies the design process in TEBNF because grammar writers know exactly what they are accessing in their grammar.
   \item Flexibility.  Generated singleton element classes control the instantiation process.  This control over the instantiation process gives them the flexibility to change the process.  Since TEBNF purposely abstracts these details from grammar writers, it is advantageous for each element class to control the way it is instantiated based on how it is used/interacts in the generated application code.
 \end{itemize}
@@ -78,7 +84,7 @@ After all of the elements and subelements have been added to the parse table and
 Once all elements and their subelements have been resolved, the TEBNF code generator iterates through each element in order of declaration in the input grammar, and generates a C++ class or other appropriate C++ code.  The name of each C++ source file corresponds to the element it was generated from.  A CMakeLists.txt file is generated with these C++ source files so that CMake can be used to generate Microsoft Visual Studio 2013 solution and project files.  For convenience, a \_clang-format file is generated so that any clang-formatting (optional) follows the intended format.
 
 \section{Lexical Analysis and Parsing Code Generation}
-The TEBNF code generation tool generates a class for each input/output (I/O) element (method) defined in a TEBNF grammar (see appendix~\ref{appendix:TEBNF}).  These I/O classes perform no lexical analysis.  TEBNF supports the receiving of input and/or sending of output through the console, files, or UDP/IP.
+The TEBNF code generation tool generates a class for each I/O element (method) defined in a TEBNF grammar (see appendix~\ref{appendix:TEBNF}).  These I/O classes perform no lexical analysis.  TEBNF supports the receiving of input and/or sending of output through the console, files, or UDP/IP.
 
 \indent
 These I/O methods are a powerful feature of TEBNF and the TEBNF code generation tool because the tool automatically integrates the code to do I/O using these methods.  The complexities of their usage are abstracted by the tool, which is one of the key advantages of TEBNF and the TEBNF code generation tool.  Contrast this to the most common code generation tools, which do not provide this built-in I/O capability.
@@ -95,7 +101,7 @@ When multiple patterns must be matched to incoming data, a separate grammar elem
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.9\textwidth]{figures/GeneratedCodeExecutionPath.png}
-\caption{Execution path for code generated by the TEBNF code generation tool.}
+\caption{Order of execution for code generated by the TEBNF code generation tool.}
 \label{fig:GeneratedCodeExecutionPath}
 \end{figure}
 
@@ -103,7 +109,7 @@ When multiple patterns must be matched to incoming data, a separate grammar elem
 The prototype code generation tool translates each grammar element into a class that can (1) unmarshal raw input data into specific user-defined types, (2) verify matches to byte patterns in the raw input data, and (3) marshal the values stored in the grammar class back into their original form and byte ordering.  Patterns in data arriving through TEBNF input methods are located by the state machine using unmarshal functions of grammar element classes.  As data arrives through an input method, patterns are recognized in the data by the grammar classes and simultaneously unmarshaled into the data types of those classes.  This means lexical analysis and parsing are performed in the same step, using a single TEBNF input (figure~\ref{fig:GeneratedCodeExecutionPath}).  This approach is different from traditional parser code generation methods.  Traditional methods require the use of a lexical analyzer generator tool and parser generator tool; each with their own input specification formats (see figure~\ref{fig:TraditionalCodeGenProcess}).
 
 \section{State Machine and Actions Code Generation}
-Path(s) of execution are defined in TEBNF using state machines, as shown in figure~\ref{fig:GeneratedCodeExecutionPath}.  State machines are represented in TEBNF using state transition table elements (see appendix~\ref{appendix:TEBNF}).  A state machine in TEBNF describes the order of tasks executed by a single application thread.  States are divided into a series of six steps.  These six steps are given below, in the order they are expressed in TEBNF, which is the same order they are evaluated by the generated code:
+Program behavior is defined in TEBNF using state machines, as shown in figure~\ref{fig:GeneratedCodeExecutionPath}.  State machines are represented in TEBNF using state transition table elements (see appendix~\ref{appendix:TEBNF}).  A state machine in TEBNF describes the order of tasks executed by a single application thread.  States are divided into a series of six steps.  These six steps are given below, in the order they are expressed in TEBNF, which is the same order they are evaluated by the generated code:
 \begin{enumerate}
   \item A unique name that identifies the state and allows other states to reference it
   \item A Boolean condition that can be either a grammar to match with input data or an explicit Boolean condition.
