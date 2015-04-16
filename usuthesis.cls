@@ -587,6 +587,7 @@
     \begin{singlespace}  % Make sure that we're single spaced
         \ \\  % empty line to create required triple space
         Major Professor: {\Zmajorprof}\\
+        Co-Major Professor: {\Zfirstreader}\\
         Department: {\Zdepartmentname}\\
     \end{singlespace}
     \begin{doublespace}
@@ -623,6 +624,7 @@
     \begin{singlespace}  % Make sure that we're single spaced
         \ \\  % empty line to create required triple space
         Major Professor: {\Zmajorprof}\\
+        Co-Major Professor: {\Zfirstreader}\\
         Department: {\Zdepartmentname}\\
     \end{singlespace}
     \begin{doublespace}
@@ -689,7 +691,7 @@
         \makebox[2.5in][l]{\Zmajorprof} \hspace{0.5in}
         \makebox[2.5in][l]{\Zfirstreader}\\
         \makebox[2.5in][l]{Major Professor} \hspace{0.5in}
-        \makebox[2.5in][l]{Committee Member}
+        \makebox[2.5in][l]{Co-Major Professor}
         \null\vskip 2\baselineskip
 
         % PhD committees have 5 members, so we need extra signature
