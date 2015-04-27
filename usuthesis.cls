@@ -586,8 +586,7 @@
     \end{center}
     \begin{singlespace}  % Make sure that we're single spaced
         \ \\  % empty line to create required triple space
-        Major Professor: {\Zmajorprof}\\
-        Co-Major Professor: {\Zfirstreader}\\
+        Major Professors: {\Zmajorprof} and {\Zfirstreader}\\
         Department: {\Zdepartmentname}\\
     \end{singlespace}
     \begin{doublespace}
@@ -623,8 +622,7 @@
     \end{center}
     \begin{singlespace}  % Make sure that we're single spaced
         \ \\  % empty line to create required triple space
-        Major Professor: {\Zmajorprof}\\
-        Co-Major Professor: {\Zfirstreader}\\
+        Major Professors: {\Zmajorprof} and {\Zfirstreader}\\
         Department: {\Zdepartmentname}\\
     \end{singlespace}
     \begin{doublespace}
@@ -690,7 +688,7 @@
         \rule{2.5in}{1pt} \hspace{0.5in}  \rule{2.5in}{1pt}\\[-3pt]
         \makebox[2.5in][l]{\Zmajorprof} \hspace{0.5in}
         \makebox[2.5in][l]{\Zfirstreader}\\
-        \makebox[2.5in][l]{Major Professor} \hspace{0.5in}
+        \makebox[2.5in][l]{Co-Major Professor} \hspace{0.5in}
         \makebox[2.5in][l]{Co-Major Professor}
         \null\vskip 2\baselineskip
 
